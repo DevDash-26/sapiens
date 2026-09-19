@@ -1,4 +1,4 @@
-expo app - mobile
+2expo app - mobile
 
 campus management system
 

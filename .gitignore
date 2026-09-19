@@ -10,6 +10,7 @@ dist/
 
 # Firebase
 .firebase/
+backend/functions/lib/
 firebase-debug.log*
 firestore-debug.log*
 ui-debug.log*
