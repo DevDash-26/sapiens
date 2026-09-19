@@ -1,122 +1,23 @@
 rules_version = '2';
 service cloud.firestore {
-  match /databases/{database}/documents {
-
-    // --- Helper Functions for 8-Tier RBAC ---
-    function isAuthenticated() {
-      return request.auth != null;
+  match /databases/{db}/documents {
+    // Section 7.1 Infrastructure Contract:
+    // Clients NEVER write to Firestore directly — all writes go through Cloud Functions API.
+    // Read access only for items that benefit from client-side realtime subscriptions.
+    
+    match /alerts/{id} {
+      allow read: if resource.data.status == 'active';
+      allow write: if false;
     }
 
-    function getUserRole() {
-      return request.auth.token.role;
+    match /notifications/{id} {
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow write: if false;
     }
 
-    function isSuperAdmin() {
-      return isAuthenticated() && getUserRole() == 'super_admin';
-    }
-
-    function isAdmin() {
-      return isAuthenticated() && (getUserRole() == 'super_admin' || getUserRole() == 'admin');
-    }
-
-    function isManager() {
-      return isAuthenticated() && (
-        getUserRole() == 'super_admin' ||
-        getUserRole() == 'admin' ||
-        getUserRole() == 'manager'
-      );
-    }
-
-    function isFinanceStaff() {
-      return isAuthenticated() && (
-        getUserRole() == 'super_admin' ||
-        getUserRole() == 'admin' ||
-        getUserRole() == 'finance_staff'
-      );
-    }
-
-    function isAcademicStaff() {
-      return isAuthenticated() && (
-        getUserRole() == 'super_admin' ||
-        getUserRole() == 'admin' ||
-        getUserRole() == 'academic_staff'
-      );
-    }
-
-    function isSocietyRep() {
-      return isAuthenticated() && (
-        getUserRole() == 'super_admin' ||
-        getUserRole() == 'admin' ||
-        getUserRole() == 'society_rep'
-      );
-    }
-
-    function hasAnyRole(roles) {
-      return isAuthenticated() && getUserRole() in roles;
-    }
-
-    // --- Users Collection ---
-    match /users/{userId} {
-      allow read: if isAuthenticated();
-      // Only Super Admin and Admin can elevate/alter roles arbitrarily; users can edit basic profile
-      allow write: if isAdmin() || (isAuthenticated() && request.auth.uid == userId && !('role' in request.resource.data));
-    }
-
-    // --- Critical Emergency Alerts (BR15, Text.lk SMS Triggers) ---
-    match /emergencies/{emergencyId} {
-      allow read: if isAuthenticated();
-      // Super Admin, Admin, and Manager can create emergency broadcasts
-      allow create, update, delete: if isManager();
-    }
-
-    // --- Announcements (BR12, NFR4) ---
-    match /announcements/{announcementId} {
-      allow read: if isAuthenticated();
-      allow write: if isManager();
-    }
-
-    // --- Events (Campus, Academic & Society Events) ---
-    match /events/{eventId} {
-      allow read: if isAuthenticated();
-      allow create: if isManager() || isAcademicStaff() || isSocietyRep();
-      allow update, delete: if isManager() || (isAuthenticated() && resource.data.creatorUid == request.auth.uid);
-    }
-
-    // --- Societies & Clubs ---
-    match /societies/{societyId} {
-      allow read: if isAuthenticated();
-      allow create, delete: if isManager();
-      allow update: if isManager() || (isSocietyRep() && request.auth.uid in resource.data.leadUids);
-    }
-
-    // --- Lost and Found ---
-    match /lost_found/{itemId} {
-      allow read: if isAuthenticated();
-      allow create: if isAuthenticated();
-      allow update, delete: if isManager() || (isAuthenticated() && resource.data.reporterUid == request.auth.uid);
-    }
-
-    // --- FAQs ---
-    match /faqs/{faqId} {
-      allow read: if true;
-      allow write: if isManager();
-    }
-
-    // --- Finance & Invoicing ---
-    match /finance/{recordId} {
-      allow read: if isFinanceStaff() || (isAuthenticated() && resource.data.studentUid == request.auth.uid);
-      allow write: if isFinanceStaff();
-    }
-
-    // --- Academic Records ---
-    match /academic_records/{recordId} {
-      allow read: if isAcademicStaff() || (isAuthenticated() && resource.data.studentUid == request.auth.uid);
-      allow write: if isAcademicStaff();
-    }
-
-    // --- Data Transfer Audit & Batches (NFR5) ---
-    match /data_transfers/{transferId} {
-      allow read, write: if isManager() || isFinanceStaff();
+    // Default deny all client reads and writes
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
