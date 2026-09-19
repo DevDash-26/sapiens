@@ -10,8 +10,9 @@ import {
   Platform,
 } from 'react-native';
 import { colors, typography, spacing, radius } from '../../theme';
-import { Header, Button } from '../../components/common';
+import { Header, Button, IconSymbol } from '../../components/common';
 import { useNavigation } from '../../contexts/NavigationContext';
+import { apiClient } from '../../services/apiClient';
 
 interface ChatMessage {
   id: string;
@@ -58,7 +59,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'You can book group study rooms (B204/B205) and browse live classroom timetables instantly through the Classroom Availability browser. Study rooms are instant confirmation for UCL students.',
         action: {
-          label: '📅 Browse Room Availability & Book',
+          label: 'Browse Room Availability & Book',
           screen: 'classroom_availability',
         },
       };
@@ -68,7 +69,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'The UCL Lost & Found Registry is active on the hub. If you lost an item, log a report with location details. If you found an item, drop it off at Block A Security Desk and log a found entry with a private verification detail.',
         action: {
-          label: '🔍 Open Lost & Found Registry',
+          label: 'Open Lost & Found Registry',
           screen: 'lost_found_feed',
         },
       };
@@ -78,7 +79,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'According to the official Academic Calendar, the Semester 1 Add/Drop module deadline is 30 September 2026 at 4:00 PM. Final semester examinations begin from mid-November.',
         action: {
-          label: '📆 View Academic Calendar',
+          label: 'View Academic Calendar',
           screen: 'academic_calendar',
         },
       };
@@ -88,7 +89,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'You can reach Ms. Dilani Fernando (Senior Student Counsellor) at Admin Block Room 12 during office hours (Mon–Fri 9:00 AM – 4:00 PM) or via counsellor@ucl.demo for confidential advising.',
         action: {
-          label: '🧑‍🏫 View Staff Directory',
+          label: 'View Staff Directory',
           screen: 'staff_directory',
         },
       };
@@ -98,7 +99,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'Upcoming campus highlights include the Freshers\' Welcome Fair (24 Sep at Main Quad) and the Robotics Open Build Night (25 Sep in Lab 2). You can RSVP directly to save a seat.',
         action: {
-          label: '🎉 Explore Campus Events',
+          label: 'Explore Campus Events',
           screen: 'events_feed',
         },
       };
@@ -108,7 +109,7 @@ export const AIAssistantScreen: React.FC = () => {
       return {
         text: 'UCL students share and trade course textbooks on the Peer Textbook Exchange board. You can browse free giveaways, swaps, or student sales for SE201, CS202, and more.',
         action: {
-          label: '📚 Browse Textbook Exchange',
+          label: 'Browse Textbook Exchange',
           screen: 'browse_textbooks',
         },
       };
@@ -117,13 +118,13 @@ export const AIAssistantScreen: React.FC = () => {
     return {
       text: `Regarding "${userQuery}": For personalized assistance, you can submit an official inquiry ticket to UCL Student Affairs or check our categorized FAQ center.`,
       action: {
-        label: '❓ Browse Campus FAQs',
+        label: 'Browse Campus FAQs',
         screen: 'faq',
       },
     };
   };
 
-  const handleSend = (textToSend?: string) => {
+  const handleSend = async (textToSend?: string) => {
     const text = (textToSend || inputText).trim();
     if (!text) return;
 
@@ -142,24 +143,54 @@ export const AIAssistantScreen: React.FC = () => {
       scrollViewRef.current?.scrollToEnd({ animated: true });
     }, 100);
 
-    // Simulate AI grounded response
-    setTimeout(() => {
-      const reply = getAssistantReply(text);
-      const aiMsg: ChatMessage = {
-        id: `ai_${Date.now()}`,
-        sender: 'assistant',
-        text: reply.text,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        action: reply.action,
-        feedback: null,
-      };
+    let replyText = '';
+    let replyAction: { label: string; screen: any; params?: any } | undefined;
 
-      setIsTyping(false);
-      setMessages((prev) => [...prev, aiMsg]);
-      setTimeout(() => {
-        scrollViewRef.current?.scrollToEnd({ animated: true });
-      }, 100);
-    }, 600);
+    try {
+      const aiResponse = await apiClient.askAI(text);
+      if (aiResponse?.answer) {
+        replyText = aiResponse.answer;
+        if (aiResponse.suggestedActions && aiResponse.suggestedActions.length > 0) {
+          const action = aiResponse.suggestedActions[0];
+          const screenMap: Record<string, string> = {
+            open_booking: 'classroom_availability',
+            open_form: 'lost_found_feed',
+            open_calendar: 'academic_calendar',
+            open_staff: 'staff_directory',
+            open_society: 'societies_directory',
+            open_faq: 'faq',
+          };
+          replyAction = {
+            label: action.label,
+            screen: screenMap[action.type] || 'home',
+            params: action.targetId ? { id: action.targetId } : undefined,
+          };
+        }
+      }
+    } catch (err) {
+      // Offline fallback
+    }
+
+    if (!replyText) {
+      const fallback = getAssistantReply(text);
+      replyText = fallback.text;
+      replyAction = fallback.action;
+    }
+
+    const aiMsg: ChatMessage = {
+      id: `ai_${Date.now()}`,
+      sender: 'assistant',
+      text: replyText,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      action: replyAction,
+      feedback: null,
+    };
+
+    setIsTyping(false);
+    setMessages((prev) => [...prev, aiMsg]);
+    setTimeout(() => {
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    }, 100);
   };
 
   const handleFeedback = (msgId: string, helpful: 'helpful' | 'unhelpful') => {
@@ -191,8 +222,9 @@ export const AIAssistantScreen: React.FC = () => {
       >
         {/* Verification banner */}
         <View style={styles.verifiedBanner}>
+          <IconSymbol name="shield" size={16} color={colors.primary[800]} active />
           <Text style={styles.verifiedText}>
-            🔒 Grounded in official UCL campus regulations, academic timetables, and facilities registry.
+            Grounded in official UCL campus regulations, academic timetables, and facilities registry.
           </Text>
         </View>
 
@@ -209,7 +241,7 @@ export const AIAssistantScreen: React.FC = () => {
             >
               {!isUser && (
                 <View style={styles.avatarCircle}>
-                  <Text style={styles.avatarEmoji}>🤖</Text>
+                  <IconSymbol name="sparkles" size={16} color={colors.primary[700]} active />
                 </View>
               )}
 
@@ -245,13 +277,23 @@ export const AIAssistantScreen: React.FC = () => {
                         onPress={() => handleFeedback(msg.id, 'helpful')}
                         style={[styles.feedbackBtn, msg.feedback === 'helpful' && styles.feedbackBtnActive]}
                       >
-                        <Text style={styles.feedbackEmoji}>👍</Text>
+                        <IconSymbol
+                          name="thumbs-up"
+                          size={14}
+                          color={msg.feedback === 'helpful' ? colors.primary[700] : colors.neutral[400]}
+                          active={msg.feedback === 'helpful'}
+                        />
                       </TouchableOpacity>
                       <TouchableOpacity
                         onPress={() => handleFeedback(msg.id, 'unhelpful')}
                         style={[styles.feedbackBtn, msg.feedback === 'unhelpful' && styles.feedbackBtnActive]}
                       >
-                        <Text style={styles.feedbackEmoji}>👎</Text>
+                        <IconSymbol
+                          name="thumbs-down"
+                          size={14}
+                          color={msg.feedback === 'unhelpful' ? colors.critical[600] : colors.neutral[400]}
+                          active={msg.feedback === 'unhelpful'}
+                        />
                       </TouchableOpacity>
                     </View>
                   )}
@@ -264,7 +306,7 @@ export const AIAssistantScreen: React.FC = () => {
         {isTyping && (
           <View style={[styles.messageWrapper, styles.messageWrapperAssistant]}>
             <View style={styles.avatarCircle}>
-              <Text style={styles.avatarEmoji}>🤖</Text>
+              <IconSymbol name="sparkles" size={16} color={colors.primary[700]} active />
             </View>
             <View style={[styles.bubble, styles.bubbleAssistant, styles.typingBubble]}>
               <Text style={styles.typingText}>Searching UCL records...</Text>
@@ -327,18 +369,22 @@ const styles = StyleSheet.create({
     paddingBottom: spacing[8],
   },
   verifiedBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: colors.primary[50],
     borderWidth: 1,
     borderColor: colors.primary[200],
     borderRadius: radius.md,
     padding: spacing[2.5],
     marginBottom: spacing[4],
+    gap: spacing[2],
   },
   verifiedText: {
     ...typography.caption,
     color: colors.primary[900],
     fontWeight: '600',
-    textAlign: 'center',
+    flex: 1,
   },
   messageWrapper: {
     flexDirection: 'row',

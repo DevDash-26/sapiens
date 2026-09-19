@@ -120,17 +120,29 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children
 
   const syncWithBackend = async () => {
     try {
-      const [apiAlerts, apiContents, apiRequests, apiRooms, apiBookings, apiFaqs, apiStaff, apiSocieties] =
-        await Promise.allSettled([
-          apiClient.getAlerts(),
-          apiClient.getContents(),
-          apiClient.getRequests(),
-          apiClient.getRooms(),
-          apiClient.getBookings(),
-          apiClient.getFAQs(),
-          apiClient.getStaff(),
-          apiClient.getSocieties(),
-        ]);
+      const [
+        apiAlerts,
+        apiContents,
+        apiRequests,
+        apiRooms,
+        apiBookings,
+        apiFaqs,
+        apiStaff,
+        apiSocieties,
+        apiNotifs,
+        apiUsers,
+      ] = await Promise.allSettled([
+        apiClient.getAlerts(),
+        apiClient.getContents(),
+        apiClient.getRequests(),
+        apiClient.getRooms(),
+        apiClient.getBookings(),
+        apiClient.getFAQs(),
+        apiClient.getStaff(),
+        apiClient.getSocieties(),
+        apiClient.getNotifications(),
+        apiClient.getUsers(),
+      ]);
 
       if (apiAlerts.status === 'fulfilled' && apiAlerts.value?.length > 0) {
         setAlerts(apiAlerts.value);
@@ -156,8 +168,14 @@ export const NavigationProvider: React.FC<{ children: ReactNode }> = ({ children
       if (apiSocieties.status === 'fulfilled' && apiSocieties.value?.length > 0) {
         setSocieties(apiSocieties.value);
       }
+      if (apiNotifs.status === 'fulfilled' && apiNotifs.value?.length > 0) {
+        setNotifications(apiNotifs.value as any);
+      }
+      if (apiUsers.status === 'fulfilled' && apiUsers.value?.length > 0) {
+        setUsers(apiUsers.value);
+      }
     } catch (err) {
-      console.log('Backend sync running in offline/local mock mode:', err);
+      console.log('Backend sync status:', err);
     }
   };
 

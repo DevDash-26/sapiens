@@ -29,7 +29,14 @@ export type IconSymbolName =
   | 'document'
   | 'building'
   | 'sparkles'
-  | 'weather';
+  | 'weather'
+  | 'robot'
+  | 'thumbs-up'
+  | 'thumbs-down'
+  | 'lock'
+  | 'send'
+  | 'megaphone'
+  | 'shield';
 
 interface IconSymbolProps {
   name: IconSymbolName;
@@ -102,6 +109,20 @@ export const IconSymbol: React.FC<IconSymbolProps> = ({
         return active ? 'sparkles' : 'sparkles-outline';
       case 'weather':
         return active ? 'thunderstorm' : 'thunderstorm-outline';
+      case 'robot':
+        return active ? 'hardware-chip' : 'hardware-chip-outline';
+      case 'thumbs-up':
+        return active ? 'thumbs-up' : 'thumbs-up-outline';
+      case 'thumbs-down':
+        return active ? 'thumbs-down' : 'thumbs-down-outline';
+      case 'lock':
+        return active ? 'lock-closed' : 'lock-closed-outline';
+      case 'send':
+        return active ? 'send' : 'send-outline';
+      case 'megaphone':
+        return active ? 'megaphone' : 'megaphone-outline';
+      case 'shield':
+        return active ? 'shield-checkmark' : 'shield-checkmark-outline';
       default:
         return 'ellipse-outline';
     }

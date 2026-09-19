@@ -205,6 +205,22 @@ export const apiClient = {
     return apiFetch<any>('/feed');
   },
 
+  // Notifications
+  async getNotifications(params?: { unreadOnly?: boolean; limit?: number }): Promise<any[]> {
+    const query = new URLSearchParams();
+    if (params?.unreadOnly) query.append('unreadOnly', 'true');
+    if (params?.limit) query.append('limit', String(params.limit));
+    const qs = query.toString();
+    return apiFetch<any[]>(`/notifications${qs ? `?${qs}` : ''}`);
+  },
+
+  async markNotificationsRead(ids?: string[]): Promise<any> {
+    return apiFetch<any>('/notifications/read', {
+      method: 'POST',
+      body: JSON.stringify(ids ? { ids } : {}),
+    });
+  },
+
   // Content Engine
   async getContents(params?: {
     type?: string;

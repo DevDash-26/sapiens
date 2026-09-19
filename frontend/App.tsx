@@ -17,6 +17,7 @@ import {
 import {
   Header,
   BottomTabBar,
+  IconSymbol,
 } from './src/components';
 import { canAccessScreen } from './src/utils/rbacGuard';
 import {
@@ -455,8 +456,17 @@ const MainAppContainer: React.FC = () => {
           />
         )}
 
-        {/* Main Screen Body */}
-        <View style={styles.screenContent}>{renderActiveScreen()}</View>
+        {/* Floating AI Campus Assistant Hovering Button */}
+        {!isAuthScreen && currentScreen !== 'ai_assistant' && (
+          <TouchableOpacity
+            style={styles.floatingAiButton}
+            onPress={() => navigate('ai_assistant')}
+            activeOpacity={0.85}
+          >
+            <IconSymbol name="sparkles" size={24} color="#ffffff" active />
+            <View style={styles.floatingAiPulse} />
+          </TouchableOpacity>
+        )}
 
         {/* Bottom Tab Bar (Visible on primary screens with RBAC role filter) */}
         {!isAuthScreen && (
@@ -563,5 +573,38 @@ const styles = StyleSheet.create({
     color: colors.neutral.white,
     fontSize: 14,
     fontWeight: '700',
+  },
+  floatingAiButton: {
+    position: 'absolute',
+    bottom: 78,
+    right: 18,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: '#e12229',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.35,
+    shadowRadius: 8,
+    elevation: 8,
+    zIndex: 999,
+    borderWidth: 2,
+    borderColor: '#ffffff',
+  },
+  floatingAiEmoji: {
+    fontSize: 24,
+  },
+  floatingAiPulse: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#10b981',
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
 });
