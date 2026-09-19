@@ -87,7 +87,7 @@ export const LostAndFoundScreen: React.FC = () => {
       </View>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#1e3a8a" style={{ marginTop: 24 }} />
+        <ActivityIndicator size="large" color="#e12229" style={{ marginTop: 24 }} />
       ) : items.length === 0 ? (
         <View style={styles.emptyBox}>
           <Text style={styles.emptyText}>No items reported currently.</Text>
@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   reportBtn: {
-    backgroundColor: '#1e3a8a',
+    backgroundColor: '#e12229',
     paddingVertical: 8,
     paddingHorizontal: 14,
     borderRadius: 8,
@@ -245,8 +245,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   typeBtnActive: {
-    backgroundColor: '#1e3a8a',
-    borderColor: '#1e3a8a',
+    backgroundColor: '#e12229',
+    borderColor: '#e12229',
   },
   typeBtnText: {
     fontSize: 13,

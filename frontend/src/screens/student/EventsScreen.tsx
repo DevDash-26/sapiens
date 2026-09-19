@@ -39,7 +39,7 @@ export const EventsScreen: React.FC = () => {
       <Text style={styles.subtext}>Explore upcoming university, academic, and club activities.</Text>
 
       {loading ? (
-        <ActivityIndicator size="large" color="#1e3a8a" style={{ marginTop: 24 }} />
+        <ActivityIndicator size="large" color="#e12229" style={{ marginTop: 24 }} />
       ) : events.length === 0 ? (
         <View style={styles.emptyBox}>
           <Text style={styles.emptyText}>No upcoming events scheduled right now.</Text>

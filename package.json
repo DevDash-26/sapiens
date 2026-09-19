@@ -2,6 +2,7 @@
   "name": "campus-management-monorepo",
   "version": "1.0.0",
   "private": true,
+  "main": "index.ts",
   "description": "Campus Management System - Expo 57 & Firebase Monorepo with 8-Tier RBAC, Text.lk SMS, and Data Transfer",
   "workspaces": [
     "frontend",
@@ -13,8 +14,14 @@
     "deploy:web": "yarn workspace frontend export:web",
     "start:frontend": "npm run start --workspace=frontend",
     "build:frontend": "npm run build --workspace=frontend",
+    "export:web": "npm run export:web --workspace=frontend",
     "build:backend": "npm run build --workspace=backend/functions",
-    "serve:backend": "npm run serve --workspace=backend/functions"
+    "serve:backend": "npm run serve --workspace=backend/functions",
+    "typecheck:frontend": "npm run typecheck --workspace=frontend",
+    "typecheck:backend": "npm run build --workspace=backend/functions",
+    "typecheck": "npm run typecheck:frontend && npm run typecheck:backend",
+    "lint": "npm run typecheck",
+    "ci": "npm run typecheck && npm run build:backend && npm run export:web"
   },
   "keywords": [
     "campus-management",
@@ -25,5 +32,8 @@
     "monorepo"
   ],
   "author": "Team Sapiens",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.1"
+  }
 }

@@ -1,38 +1,119 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { useAuthRBAC } from '../../contexts/AuthRBACContext';
+import { View, Text, StyleSheet, TouchableOpacity, ViewStyle, Image } from 'react-native';
+import { colors } from '../../theme/colors';
+import { spacing } from '../../theme/spacing';
+import { radius } from '../../theme/radius';
+
+import { IconSymbol } from './IconSymbol';
 
 interface HeaderProps {
   title: string;
   subtitle?: string;
-  onLogout?: () => void;
+  showBack?: boolean;
+  onBack?: () => void;
+  onNotificationPress?: () => void;
+  onProfilePress?: () => void;
+  unreadCount?: number;
+  rightAction?: React.ReactNode | { label: string; onPress: () => void };
+  rightElement?: React.ReactNode;
+  style?: ViewStyle;
 }
 
-export const Header: React.FC<HeaderProps> = ({ title, subtitle, onLogout }) => {
-  const { profile, roleDisplayName, logout } = useAuthRBAC();
-
-  const handleLogout = () => {
-    if (onLogout) {
-      onLogout();
-    } else {
-      logout();
+export const Header: React.FC<HeaderProps> = ({
+  title,
+  subtitle,
+  showBack,
+  onBack,
+  onNotificationPress,
+  unreadCount = 0,
+  rightAction,
+  rightElement,
+  onProfilePress,
+  style,
+}) => {
+  const renderRightAction = () => {
+    const action = rightElement || rightAction;
+    if (!action) return null;
+    if (React.isValidElement(action)) {
+      return action;
     }
+    if (typeof action === 'object' && 'label' in action && 'onPress' in action) {
+      return (
+        <TouchableOpacity
+          style={styles.actionBtn}
+          onPress={(action as any).onPress}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.actionBtnText}>{(action as any).label}</Text>
+        </TouchableOpacity>
+      );
+    }
+    return null;
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.titleArea}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
-      </View>
-      <View style={styles.userInfo}>
-        <View style={styles.badge}>
-          <Text style={styles.badgeText}>{roleDisplayName || 'Guest'}</Text>
+    <View style={[styles.container, style]}>
+      <View style={styles.leftRow}>
+        {onBack || showBack ? (
+          <TouchableOpacity
+            onPress={onBack}
+            style={styles.backButton}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            activeOpacity={0.7}
+          >
+            <IconSymbol name="arrow-back" size={22} color="#ffffff" />
+          </TouchableOpacity>
+        ) : (
+          <View style={styles.logoBadge}>
+            <Image
+              source={require('../../../assets/logos/ucl-logo-transparent.png')}
+              style={styles.headerLogo}
+              resizeMode="contain"
+            />
+          </View>
+        )}
+
+        <View style={styles.titleContainer}>
+          <Text style={styles.title} numberOfLines={1}>
+            {title}
+          </Text>
+          {subtitle && (
+            <Text style={styles.subtitle} numberOfLines={1}>
+              {subtitle}
+            </Text>
+          )}
         </View>
-        {profile?.displayName && <Text style={styles.userName}>{profile.displayName}</Text>}
-        <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
-          <Text style={styles.logoutText}>Sign Out</Text>
-        </TouchableOpacity>
+      </View>
+
+      <View style={styles.rightRow}>
+        {renderRightAction()}
+
+        {onNotificationPress ? (
+          <TouchableOpacity
+            style={styles.notifButton}
+            onPress={onNotificationPress}
+            activeOpacity={0.7}
+          >
+            <IconSymbol name="bell" size={22} color="#ffffff" />
+            {unreadCount > 0 && (
+              <View style={styles.notifBadge}>
+                <Text style={styles.notifBadgeText}>
+                  {unreadCount > 9 ? '9+' : unreadCount}
+                </Text>
+              </View>
+            )}
+          </TouchableOpacity>
+        ) : null}
+
+        {onProfilePress ? (
+          <TouchableOpacity
+            style={styles.profileButton}
+            onPress={onProfilePress}
+            activeOpacity={0.7}
+          >
+            <IconSymbol name="person" size={20} color="#ffffff" />
+          </TouchableOpacity>
+        ) : null}
       </View>
     </View>
   );
@@ -40,63 +121,108 @@ export const Header: React.FC<HeaderProps> = ({ title, subtitle, onLogout }) => 
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1e3a8a',
-    paddingTop: 48,
-    paddingBottom: 20,
-    paddingHorizontal: 20,
+    height: 56,
+    backgroundColor: colors.primary.DEFAULT,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    justifyContent: 'space-between',
+    paddingHorizontal: spacing.lg,
+    borderBottomWidth: 2.5,
+    borderBottomColor: colors.primary.dark,
   },
-  titleArea: {
+  leftRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  backButton: {
+    marginRight: spacing.md,
+    padding: 4,
+  },
+  logoBadge: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: spacing.sm + 2,
+    padding: 3,
+    shadowColor: '#000',
+    shadowOpacity: 0.12,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+  },
+  headerLogo: {
+    width: '100%',
+    height: '100%',
+  },
+  backIcon: {
+    fontSize: 20,
+    color: '#ffffff',
+    fontWeight: 'bold',
+  },
+  titleContainer: {
     flex: 1,
   },
   title: {
-    color: '#ffffff',
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: '700',
+    color: '#ffffff',
   },
   subtitle: {
-    color: '#93c5fd',
-    fontSize: 13,
-    marginTop: 2,
+    fontSize: 11,
+    color: '#fee2e2',
+    marginTop: 1,
   },
-  userInfo: {
+  rightRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
   },
-  badge: {
-    backgroundColor: '#3b82f6',
+  actionBtn: {
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 9999,
+    paddingVertical: 5,
+    borderRadius: radius.control,
+    marginRight: 6,
   },
-  badgeText: {
+  actionBtnText: {
     color: '#ffffff',
     fontSize: 12,
-    fontWeight: '600',
+    fontWeight: '700',
   },
-  userName: {
-    color: '#e2e8f0',
-    fontSize: 13,
-    fontWeight: '500',
+  notifButton: {
+    padding: 6,
+    position: 'relative',
   },
-  logoutButton: {
+  notifIcon: {
+    fontSize: 18,
+  },
+  notifBadge: {
+    position: 'absolute',
+    top: 2,
+    right: 2,
+    backgroundColor: colors.accent.DEFAULT,
+    borderRadius: radius.pill,
+    minWidth: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  notifBadgeText: {
+    color: '#ffffff',
+    fontSize: 9,
+    fontWeight: '800',
+  },
+  profileButton: {
+    padding: 4,
     marginLeft: 8,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    backgroundColor: 'rgba(255,255,255,0.15)',
-    borderRadius: 6,
-  },
-  logoutText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '600',
+    borderRadius: radius.pill,
+    backgroundColor: 'rgba(255, 255, 255, 0.18)',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 32,
+    height: 32,
   },
 });

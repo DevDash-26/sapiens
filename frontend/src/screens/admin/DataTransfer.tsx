@@ -203,8 +203,8 @@ const styles = StyleSheet.create({
     borderColor: '#cbd5e1',
   },
   chipActive: {
-    backgroundColor: '#1e3a8a',
-    borderColor: '#1e3a8a',
+    backgroundColor: '#e12229',
+    borderColor: '#e12229',
   },
   chipText: {
     fontSize: 13,
@@ -229,8 +229,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#f8fafc',
   },
   formatBtnActive: {
-    borderColor: '#0284c7',
-    backgroundColor: '#e0f2fe',
+    borderColor: '#e12229',
+    backgroundColor: '#fee2e2',
   },
   formatBtnText: {
     fontSize: 14,
@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     color: '#475569',
   },
   formatBtnTextActive: {
-    color: '#0284c7',
+    color: '#e12229',
   },
   actionButtons: {
     flexDirection: 'row',

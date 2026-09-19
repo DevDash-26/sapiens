@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#f7f9fc;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}#side-drawer.open{transform:translateX(0);}#drawer-backdrop.open{opacity:1;pointer-events:auto;}#ai-sheet.open{transform:translateY(0);}</style><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto+Flex:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-container":"#c8102e","on-surface-variant":"#5c403f","tertiary":"#394d6d","surface-container-high":"#e6e8eb","on-tertiary":"#ffffff","inverse-on-surface":"#eff1f4","primary-fixed":"#ffdad8","on-primary-container":"#ffdad8","surface":"#f7f9fc","outline-variant":"#e5bdbb","secondary-container":"#63a1ff","on-error-container":"#93000a","surface-container-highest":"#e0e3e6","surface-container-low":"#f2f4f7","surface-container-lowest":"#ffffff","on-secondary-container":"#00376f","on-secondary-fixed":"#001b3d","secondary-fixed":"#d6e3ff","on-tertiary-fixed-variant":"#334767","error-container":"#ffdad6","on-surface":"#191c1e","on-tertiary-fixed":"#031c39","tertiary-fixed-dim":"#b3c7ee","secondary":"#005db6","tertiary-container":"#516587","inverse-surface":"#2d3133","primary-fixed-dim":"#ffb3b1","on-primary-fixed-variant":"#92001c","on-secondary-fixed-variant":"#00468c","surface-dim":"#d8dadd","on-primary":"#ffffff","surface-tint":"#bf0229","secondary-fixed-dim":"#a9c7ff","tertiary-fixed":"#d5e3ff","primary":"#9e001f","inverse-primary":"#ffb3b1","background":"#f7f9fc","on-error":"#ffffff","surface-container":"#eceef1","surface-variant":"#e0e3e6","on-primary-fixed":"#410007","on-secondary":"#ffffff","surface-bright":"#f7f9fc","error":"#ba1a1a","outline":"#906f6e","on-background":"#191c1e","on-tertiary-container":"#d5e2ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xs":"0.25rem","space-sm":"0.5rem","margin":"2rem","margin-mobile":"1rem","space-lg":"1.5rem","space-xl":"2rem","gutter-mobile":"1rem","space-md":"1rem","gutter":"1.5rem"},"fontFamily":{"label-lg":["Montserrat"],"stat-display":["Montserrat"],"label-sm":["Montserrat"],"headline-lg":["Montserrat"],"display-lg":["Montserrat"],"body-sm":["Roboto Flex"],"headline-sm":["Montserrat"],"headline-md":["Montserrat"],"body-md":["Roboto Flex"],"body-lg":["Roboto Flex"],"label-md":["Montserrat"],"display-lg-mobile":["Montserrat"]},"fontSize":{"label-lg":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.02em","fontWeight":"600"}],"stat-display":["2rem",{"lineHeight":"2.25rem","fontWeight":"700"}],"label-sm":["0.6875rem",{"lineHeight":"0.875rem","letterSpacing":"0.04em","fontWeight":"500"}],"headline-lg":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["0.875rem",{"lineHeight":"1.25rem","fontWeight":"400"}],"headline-sm":["1.125rem",{"lineHeight":"1.5rem","fontWeight":"600"}],"headline-md":["1.25rem",{"lineHeight":"1.75rem","fontWeight":"600"}],"body-md":["1rem",{"lineHeight":"1.5rem","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","fontWeight":"400"}],"label-md":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.03em","fontWeight":"600"}],"display-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.01em","fontWeight":"700"}]}}}};</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col antialiased selection:bg-primary selection:text-on-primary"><div class="fixed top-0 inset-x-0 h-1 bg-primary-container z-[60]"></div><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-28 px-gutter-mobile flex flex-col justify-center gap-space-xs"><div class="flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><button aria-label="Open Navigation Menu" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container-low active:bg-surface-container-high transition-colors" id="menu-open-btn" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex items-center gap-space-xs"><img alt="UniHub Official University Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VZhc8Y_j1Yqp8TITsvv6FhQN7VbZuYQ1IeEAV15NiSJA-X_q4VsDY_NI6JB9Wo8DUov2nRmqcCaDKUkCFgGYtVX2NVDhzuE-Olzcnjc87Zlnz0bKqcQ7c6OQxZuzXV9ajfnoopJaDB5-OSAHFge6N2Fg_CmXXZJD3nK1rGGDzAN4dBHi5Dc4e0CLSwoteESdNF9En54_qXQS4je6xx0QVJXGwFeK8mxJ8KXmQI4pSokKgWC7mSkBZwznc"/><div class="flex flex-col"><span class="font-label-md text-label-md text-primary leading-none uppercase">UniHub</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium tracking-tight">Univ. of Lancashire</span></div></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container-low transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2 right-2 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-primary-container text-on-primary font-label-sm text-[10px] font-bold rounded-full shadow-[0_1px_3px_rgba(200,16,46,0.3)]">3</span></button><a aria-label="Student Profile" class="w-11 h-11 flex items-center justify-center" data-path="student-profile" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65ce61SUjUxxiX4mG4b83oudCa0PmTm1DysNqmLV0XNOqmN7wP3s0bmHvqHlhAgTSm6cQyZ9YIduSZyv3yscjqEjgyOVDOqa_rix1tCGfUVkgnRqVEb4nJU3HdVfDn84DaEDMMlfTFKuOCdk9Z1M_rFwlN6GXG4eNFRqLwjIng2phZ-HxRWOr65k3sW6tT8W_MuvCa01Kw61YvaHO4Upn8XhrD4L5bWkpllM4Gb1faogEtvkaX8u_"/></a></div></div><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px] pointer-events-none">search</span><input class="w-full h-10 pl-10 pr-4 bg-surface-container-low rounded-lg text-on-surface font-body-sm text-body-sm placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/30 transition-all" placeholder="Search events, announcements, services, societies..." type="search"/></div></div></header><main class="flex flex-col relative w-full pt-28 pb-28 bg-surface"><div class="flex flex-col w-full px-gutter-mobile space-y-space-md">
+<!-- Interactive Toast Layer -->
+<div class="fixed top-32 inset-x-4 z-50 transform -translate-y-12 opacity-0 pointer-events-none transition-all duration-300 ease-out flex items-center justify-between p-space-sm pl-space-md bg-inverse-surface text-inverse-on-surface rounded-lg shadow-xl" id="toast">
+<div class="flex items-center gap-space-sm min-w-0">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]" id="toast-icon">check_circle</span>
+<span class="font-body-sm text-body-sm truncate" id="toast-text">Action completed successfully</span>
+</div>
+<button class="text-inverse-on-surface/70 hover:text-inverse-on-surface p-1" onclick="hideToast()" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<!-- Hero Greeting Header -->
+<section class="flex flex-col bg-surface-container-lowest p-space-md rounded-xl shadow-sm space-y-space-sm relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-36 h-36 bg-primary/5 rounded-full blur-2xl pointer-events-none"></div>
+<div class="flex items-center gap-1.5 text-primary">
+<span class="material-symbols-outlined text-[16px]">school</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wider font-semibold">University of Lancashire · Student Portal</span>
+</div>
+<div class="flex flex-col space-y-1">
+<h1 class="font-display-lg-mobile text-display-lg-mobile text-on-surface font-bold tracking-tight">
+        Good morning, Isuru
+      </h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+        Everything you need for campus, academics and student life — in one place.
+      </p>
+</div>
+<!-- Student context badge -->
+<div class="flex items-center gap-space-sm p-2.5 bg-secondary-fixed/40 text-on-secondary-fixed rounded-lg">
+<span class="material-symbols-outlined text-[20px] text-secondary">verified_user</span>
+<span class="font-label-sm text-label-sm font-semibold tracking-wide truncate">
+        Isuru S. · Software Engineering · Year 3 · Faculty of Computing
+      </span>
+</div>
+<div class="pt-1">
+<button class="w-full h-11 flex items-center justify-center gap-space-xs bg-primary-container text-on-primary rounded-lg font-label-lg text-label-lg shadow-sm active:scale-[0.98] transition-transform" onclick="triggerToast('Opening campus events directory', 'explore')" type="button">
+<span class="material-symbols-outlined text-[20px]">event_upcoming</span>
+<span>Explore events</span>
+</button>
+</div>
+</section>
+<!-- High-Priority Campus Notifications Stack -->
+<section class="flex flex-col space-y-space-xs">
+<!-- Critical Emergency Alert -->
+<div class="flex flex-col bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-container"></div>
+<div class="flex items-start gap-space-sm pl-1">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">emergency_home</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-md text-label-md text-primary font-bold uppercase tracking-wide">Emergency communication</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Today, 08:15 AM</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 leading-normal">
+            Library Level 3 HVAC maintenance underway; silent pods relocated to Kirkham Building.
+          </p>
+</div>
+</div>
+</div>
+<!-- Schedule Change Alert -->
+<div class="flex flex-col bg-surface-container-lowest rounded-lg p-space-md shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1.5 bg-primary-fixed-dim"></div>
+<div class="flex items-start gap-space-sm pl-1">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed-variant flex items-center justify-center shrink-0 mt-0.5">
+<span class="material-symbols-outlined text-[18px]">update</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-md text-label-md text-on-surface font-bold">Schedule change</span>
+<span class="font-label-sm text-label-sm text-primary font-semibold bg-primary-fixed/50 px-2 py-0.5 rounded-full">SE304</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface mt-1 leading-normal">
+            SE304 Distributed Systems Lab moved to Turing Lab B, 2:00 PM.
+          </p>
+</div>
+</div>
+</div>
+</section>
+<!-- Dashboard Overview Statistics Grid -->
+<section class="flex flex-col space-y-space-xs">
+<div class="flex items-center justify-between px-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">At a Glance</h2>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Autumn Term '24</span>
+</div>
+<div class="grid grid-cols-2 gap-space-sm">
+<!-- Stat 1 -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm justify-between space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-secondary text-[22px]">mark_chat_unread</span>
+<span class="font-label-sm text-[10px] bg-secondary-fixed text-on-secondary-fixed font-bold px-2 py-0.5 rounded-full">New</span>
+</div>
+<div>
+<div class="font-stat-display text-stat-display text-on-surface font-bold">8</div>
+<div class="font-label-md text-label-md text-on-surface font-semibold truncate">Relevant notices</div>
+<div class="font-body-sm text-label-sm text-secondary font-medium">3 new today</div>
+</div>
+</div>
+<!-- Stat 2 -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm justify-between space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary-container text-[22px]">event_note</span>
+<span class="font-label-sm text-[10px] bg-surface-container text-on-surface-variant font-bold px-2 py-0.5 rounded-full">Active</span>
+</div>
+<div>
+<div class="font-stat-display text-stat-display text-on-surface font-bold">6</div>
+<div class="font-label-md text-label-md text-on-surface font-semibold truncate">Upcoming events</div>
+<div class="font-body-sm text-label-sm text-on-surface-variant font-medium">2 this week</div>
+</div>
+</div>
+<!-- Stat 3 -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm justify-between space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-tertiary-container text-[22px]">stars</span>
+<span class="font-label-sm text-[10px] bg-surface-container text-on-surface-variant font-bold px-2 py-0.5 rounded-full">Clubs</span>
+</div>
+<div>
+<div class="font-stat-display text-stat-display text-on-surface font-bold">4</div>
+<div class="font-label-md text-label-md text-on-surface font-semibold truncate">My interests</div>
+<div class="font-body-sm text-label-sm text-on-surface-variant font-medium">RSVP confirmed</div>
+</div>
+</div>
+<!-- Stat 4 -->
+<div class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm justify-between space-y-2">
+<div class="flex items-center justify-between">
+<span class="material-symbols-outlined text-primary text-[22px]">timer</span>
+<span class="font-label-sm text-[10px] bg-primary-fixed text-on-primary-fixed-variant font-bold px-2 py-0.5 rounded-full">Urgent</span>
+</div>
+<div>
+<div class="font-stat-display text-stat-display text-on-surface font-bold">3</div>
+<div class="font-label-md text-label-md text-on-surface font-semibold truncate">Deadlines</div>
+<div class="font-body-sm text-label-sm text-primary font-medium">Next: Sep 24</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Quick Actions Grid -->
+<section class="flex flex-col space-y-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold px-1">Quick Actions</h2>
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="flex flex-col items-start p-space-md bg-surface-container-lowest rounded-lg shadow-sm text-left active:bg-surface-container-low transition-colors space-y-2" onclick="triggerToast('Opening lost and found reporting', 'search_check')" type="button">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[22px]">search_check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Report lost item</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Log query with Security</span>
+</div>
+</button>
+<button class="flex flex-col items-start p-space-md bg-surface-container-lowest rounded-lg shadow-sm text-left active:bg-surface-container-low transition-colors space-y-2" onclick="triggerToast('Opening classroom booking portal', 'meeting_room')" type="button">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[22px]">meeting_room</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Book a classroom</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Reserve study & lab pods</span>
+</div>
+</button>
+<button class="flex flex-col items-start p-space-md bg-surface-container-lowest rounded-lg shadow-sm text-left active:bg-surface-container-low transition-colors space-y-2" onclick="triggerToast('Opening student academic support services', 'school')" type="button">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined text-[22px]">school</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Academic support</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">1-on-1 tutoring & advisors</span>
+</div>
+</button>
+<button class="flex flex-col items-start p-space-md bg-surface-container-lowest rounded-lg shadow-sm text-left active:bg-surface-container-low transition-colors space-y-2" onclick="triggerToast('Opening student union feedback form', 'rate_review')" type="button">
+<div class="w-10 h-10 rounded-lg bg-surface-container flex items-center justify-center text-on-surface">
+<span class="material-symbols-outlined text-[22px]">rate_review</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-bold">Send feedback</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Voice issues to SU reps</span>
+</div>
+</button>
+</div>
+</section>
+<!-- Personalized Announcements ('For you' feed) -->
+<section class="flex flex-col space-y-space-xs">
+<div class="flex items-center justify-between px-1">
+<div class="flex items-center gap-space-xs">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">For You</h2>
+<span class="material-symbols-outlined text-secondary text-[18px]">auto_awesome</span>
+</div>
+<a class="font-label-sm text-label-sm text-secondary font-semibold hover:underline" data-path="campus-announcements" href="#">View all (14)</a>
+</div>
+<!-- Feed Cards -->
+<div class="flex flex-col space-y-space-xs">
+<!-- Announcement 1 -->
+<article class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm space-y-2">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">person_pin</span>
+            Targeted to you
+          </span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">2h ago</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+          Final-year project proposal briefing
+        </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+          Dr. Hargreaves will deliver the FYP supervisor allocation framework overview. Mandatory attendance for Computing final-year students.
+        </p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">domain</span> Dept of Computing
+          </span>
+<button class="text-secondary font-label-md text-label-md flex items-center gap-1 hover:underline" onclick="triggerToast('Briefing details bookmarked to portal', 'bookmark')" type="button">
+            Read details <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Announcement 2 -->
+<article class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm space-y-2">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">public</span>
+            University-wide
+          </span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">4h ago</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+          Library extended study hours for mid-terms
+        </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+          Harris Learning Hub will operate 24/7 beginning next Monday. Night security shuttles will depart every 20 minutes from the front plaza.
+        </p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">local_library</span> Library Services
+          </span>
+<button class="text-secondary font-label-md text-label-md flex items-center gap-1 hover:underline" onclick="triggerToast('Study timetable saved', 'bookmark')" type="button">
+            View hours <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</article>
+<!-- Announcement 3 -->
+<article class="flex flex-col bg-surface-container-lowest p-space-md rounded-lg shadow-sm space-y-2">
+<div class="flex items-center justify-between gap-2">
+<span class="font-label-sm text-label-sm px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">person_pin</span>
+            Targeted to you
+          </span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">1d ago</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+          Software Engineering society committee applications
+        </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+          Open executive roles include Hackathon Lead, Tech Workshop Coordinator, and Student Liaison. Applications close Sunday midnight.
+        </p>
+<div class="flex items-center justify-between pt-1">
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">groups</span> Societies Council
+          </span>
+<button class="text-secondary font-label-md text-label-md flex items-center gap-1 hover:underline" onclick="triggerToast('Redirecting to committee application portal', 'send')" type="button">
+            Apply now <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+</button>
+</div>
+</article>
+</div>
+</section>
+<!-- Upcoming Schedule & Deadlines Section -->
+<section class="flex flex-col space-y-space-xs">
+<div class="flex items-center justify-between px-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">Upcoming Agenda</h2>
+<a class="font-label-sm text-label-sm text-secondary font-semibold hover:underline" data-path="academic-calendar" href="#">Full calendar</a>
+</div>
+<div class="flex flex-col space-y-space-xs">
+<!-- Item 1 -->
+<div class="flex items-center p-space-sm bg-surface-container-lowest rounded-lg shadow-sm gap-space-sm">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-surface-container-low rounded-lg shrink-0 text-center">
+<span class="font-label-sm text-[10px] uppercase font-bold text-primary tracking-tight">SEP</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold leading-none">20</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<h4 class="font-label-lg text-label-lg text-on-surface font-bold truncate">AI & Future Careers</h4>
+<div class="flex items-center gap-2 text-on-surface-variant mt-0.5">
+<span class="font-body-sm text-[11px] flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 10:00 AM
+            </span>
+<span class="text-on-surface-variant/40">·</span>
+<span class="font-body-sm text-[11px] flex items-center gap-0.5 truncate">
+<span class="material-symbols-outlined text-[13px]">location_on</span> Main Aud.
+            </span>
+</div>
+</div>
+<button aria-label="Add to calendar" class="w-9 h-9 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-low shrink-0" onclick="triggerToast('Added AI Careers seminar to calendar', 'event_available')" type="button">
+<span class="material-symbols-outlined text-[20px]">calendar_add_on</span>
+</button>
+</div>
+<!-- Item 2 -->
+<div class="flex items-center p-space-sm bg-surface-container-lowest rounded-lg shadow-sm gap-space-sm">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-surface-container-low rounded-lg shrink-0 text-center">
+<span class="font-label-sm text-[10px] uppercase font-bold text-secondary tracking-tight">SEP</span>
+<span class="font-headline-lg text-headline-lg text-on-surface font-bold leading-none">22</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<h4 class="font-label-lg text-label-lg text-on-surface font-bold truncate">Design Club Meetup</h4>
+<div class="flex items-center gap-2 text-on-surface-variant mt-0.5">
+<span class="font-body-sm text-[11px] flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[13px]">schedule</span> 3:00 PM
+            </span>
+<span class="text-on-surface-variant/40">·</span>
+<span class="font-body-sm text-[11px] flex items-center gap-0.5 truncate">
+<span class="material-symbols-outlined text-[13px]">location_on</span> Studio 2
+            </span>
+</div>
+</div>
+<button aria-label="Add to calendar" class="w-9 h-9 rounded-lg flex items-center justify-center text-secondary hover:bg-surface-container-low shrink-0" onclick="triggerToast('Design club RSVP confirmed', 'how_to_reg')" type="button">
+<span class="material-symbols-outlined text-[20px]">calendar_add_on</span>
+</button>
+</div>
+<!-- Item 3: Urgent Deadline -->
+<div class="flex items-center p-space-sm bg-surface-container-lowest rounded-lg shadow-sm gap-space-sm">
+<div class="flex flex-col items-center justify-center w-14 h-14 bg-primary-fixed/40 rounded-lg shrink-0 text-center">
+<span class="font-label-sm text-[10px] uppercase font-bold text-primary tracking-tight">SEP</span>
+<span class="font-headline-lg text-headline-lg text-primary font-bold leading-none">24</span>
+</div>
+<div class="flex flex-col flex-1 min-w-0">
+<div class="flex items-center gap-1.5">
+<h4 class="font-label-lg text-label-lg text-on-surface font-bold truncate">Project Proposal Deadline</h4>
+<span class="w-2 h-2 rounded-full bg-primary-container shrink-0"></span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant mt-0.5">
+<span class="font-body-sm text-[11px] flex items-center gap-0.5 text-primary font-semibold">
+<span class="material-symbols-outlined text-[13px]">alarm</span> 11:59 PM
+            </span>
+<span class="text-on-surface-variant/40">·</span>
+<span class="font-body-sm text-[11px] flex items-center gap-0.5 truncate">
+<span class="material-symbols-outlined text-[13px]">cloud_upload</span> Online Moodle
+            </span>
+</div>
+</div>
+<button aria-label="Upload submission" class="w-9 h-9 rounded-lg flex items-center justify-center text-primary hover:bg-surface-container-low shrink-0" onclick="triggerToast('Opening submission portal on Moodle', 'open_in_new')" type="button">
+<span class="material-symbols-outlined text-[20px]">file_upload</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Campus Life Spotlight (Editorial Visual Block) -->
+<section class="flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden shadow-sm">
+<div class="h-36 relative bg-cover bg-center" data-alt="University students studying collaboratively in modern sunlit campus library atrium with laptops, notes, and coffee cups, modern architecture with warm wooden accents and bright glass windows, professional photography, natural lighting, deep navy and crimson university brand accents." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC24TIwrouwELimK3swkq9J0k1P6JjNO8XINA1A26By0I_jGmKNIRLVl-fN6EKdhn1FfnnWN1ed1owBndNWW0lqZn4D6EkVzRVDUBvatuqoQir-h3rn3w91bu-FuKlCIq5fIf7YvwhUCdC8yilJlc1Z6Z40iVoIi4XNJqaVRBFp6Ojm4UK8KxljuRFq1ZEo2EmYCb8cIUOoVtLXxwb3sxY7hw6ZJ0hr99ZDC7lQDGJPsR7aPKDlppZI')">
+<div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+<div class="absolute top-3 left-3">
+<span class="px-2 py-0.5 rounded-full bg-surface-container-lowest/90 text-primary font-label-sm text-label-sm font-bold shadow-sm">
+          Campus Life
+        </span>
+</div>
+<div class="absolute bottom-3 inset-x-3 text-white">
+<span class="font-label-sm text-white/80 font-medium">Student Union Festival Week</span>
+<h4 class="font-headline-sm text-headline-sm font-bold leading-snug">Welcome Fair & Tech Exhibition starts this Friday</h4>
+</div>
+</div>
+<div class="p-space-md flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary text-[20px]">celebration</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">Over 45 student societies booths</span>
+</div>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container text-on-surface font-label-sm text-label-sm font-semibold hover:bg-surface-container-high transition-colors" onclick="triggerToast('Exhibition schedule downloaded', 'download')" type="button">
+        Schedule
+      </button>
+</div>
+</section>
+</div>
+<script>
+  let toastTimer;
+  function triggerToast(message, iconName = 'check_circle') {
+    const toast = document.getElementById('toast');
+    const toastText = document.getElementById('toast-text');
+    const toastIcon = document.getElementById('toast-icon');
+
+    if (!toast) return;
+
+    toastText.textContent = message;
+    if (toastIcon) toastIcon.textContent = iconName;
+
+    toast.classList.remove('opacity-0', '-translate-y-12', 'pointer-events-none');
+    toast.classList.add('opacity-100', 'translate-y-0');
+
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      hideToast();
+    }, 3200);
+  }
+
+  function hideToast() {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.classList.remove('opacity-100', 'translate-y-0');
+    toast.classList.add('opacity-0', '-translate-y-12', 'pointer-events-none');
+  }
+</script></main><div class="fixed bottom-24 right-4 z-40"><button aria-label="Open UniHub Assistant" class="flex items-center gap-space-xs h-12 px-4 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_4px_16px_rgba(200,16,46,0.35)] active:scale-95 transition-all" id="ai-fab-btn" type="button"><span class="material-symbols-outlined text-[20px]">auto_awesome</span><span>UniHub AI</span></button></div><div class="fixed inset-x-0 bottom-0 z-50 bg-surface-container-lowest rounded-t-xl shadow-[0_-4px_24px_rgba(7,31,61,0.12)] transform translate-y-full transition-transform duration-300 ease-out pb-safe max-w-md mx-auto" id="ai-sheet"><div class="p-space-md"><div class="w-12 h-1 bg-surface-container-highest rounded-full mx-auto mb-3"></div><div class="flex items-center justify-between mb-3"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[22px]">smart_toy</span><h3 class="font-headline-sm text-headline-sm text-on-surface">UniHub Assistant</h3></div><button class="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low" id="ai-sheet-close" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button></div><p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Ask campus questions or pick a suggested topic:</p><div class="flex flex-wrap gap-space-xs mb-3"><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Next class location?</button><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Assignment deadlines</button><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Book library pod</button></div></div></div><div class="fixed inset-0 bg-[#071F3D]/50 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="drawer-backdrop"></div><aside class="fixed top-0 left-0 bottom-0 w-[84%] max-w-[320px] bg-[#071F3D] text-white z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col pt-safe pb-safe shadow-[8px_0_32px_rgba(7,31,61,0.2)]" id="side-drawer"><div class="p-space-md flex items-center justify-between bg-black/10"><div class="flex items-center gap-space-xs"><img alt="UniHub Official University Logo" class="h-7 w-auto object-contain brightness-0 invert" src="https://lh3.googleusercontent.com/aida/AEtjO1VZhc8Y_j1Yqp8TITsvv6FhQN7VbZuYQ1IeEAV15NiSJA-X_q4VsDY_NI6JB9Wo8DUov2nRmqcCaDKUkCFgGYtVX2NVDhzuE-Olzcnjc87Zlnz0bKqcQ7c6OQxZuzXV9ajfnoopJaDB5-OSAHFge6N2Fg_CmXXZJD3nK1rGGDzAN4dBHi5Dc4e0CLSwoteESdNF9En54_qXQS4je6xx0QVJXGwFeK8mxJ8KXmQI4pSokKgWC7mSkBZwznc"/><div class="flex flex-col"><span class="font-label-md text-label-md text-white uppercase font-bold tracking-wide">UniHub</span><span class="font-label-sm text-label-sm text-white/60">Univ. of Lancashire</span></div></div><button class="w-10 h-10 flex items-center justify-center text-white/80 hover:text-white rounded-lg" id="drawer-close-btn" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button></div><div class="px-space-md py-space-sm flex items-center gap-space-sm bg-white/5 mx-space-md my-space-sm rounded-lg"><img alt="Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65ce61SUjUxxiX4mG4b83oudCa0PmTm1DysNqmLV0XNOqmN7wP3s0bmHvqHlhAgTSm6cQyZ9YIduSZyv3yscjqEjgyOVDOqa_rix1tCGfUVkgnRqVEb4nJU3HdVfDn84DaEDMMlfTFKuOCdk9Z1M_rFwlN6GXG4eNFRqLwjIng2phZ-HxRWOr65k3sW6tT8W_MuvCa01Kw61YvaHO4Upn8XhrD4L5bWkpllM4Gb1faogEtvkaX8u_"/><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md text-white font-semibold truncate">Isuru S.</span><span class="font-body-sm text-[11px] text-white/70 leading-tight truncate">Software Engineering · Y3</span><span class="font-body-sm text-[10px] text-white/50 truncate">Faculty of Computing</span></div></div><div class="flex-1 overflow-y-auto px-space-md py-space-xs space-y-space-md"><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Workspace</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="student-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="campus-announcements" href="#"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-body-md text-body-md">Announcements</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="events-directory" href="#"><span class="material-symbols-outlined text-[20px]">event</span><span class="font-body-md text-body-md">Events</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="societies-clubs" href="#"><span class="material-symbols-outlined text-[20px]">groups</span><span class="font-body-md text-body-md">Societies</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="lost-and-found" href="#"><span class="material-symbols-outlined text-[20px]">search_check</span><span class="font-body-md text-body-md">Lost & Found</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="academic-calendar" href="#"><span class="material-symbols-outlined text-[20px]">calendar_today</span><span class="font-body-md text-body-md">Academic Calendar</span></a></div><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Student Services</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="classroom-booking" href="#"><span class="material-symbols-outlined text-[20px]">meeting_room</span><span class="font-body-md text-body-md">Classroom Booking</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="academic-support" href="#"><span class="material-symbols-outlined text-[20px]">school</span><span class="font-body-md text-body-md">Academic Support</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="jobs-and-internships" href="#"><span class="material-symbols-outlined text-[20px]">work</span><span class="font-body-md text-body-md">Jobs & Internships</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="volunteering-portal" href="#"><span class="material-symbols-outlined text-[20px]">volunteer_activism</span><span class="font-body-md text-body-md">Volunteering</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="campus-services" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-body-md text-body-md">Campus Services</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="staff-directory" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-body-md text-body-md">Staff Directory</span></a></div><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Help</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="faqs" href="#"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-body-md text-body-md">FAQs</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="student-feedback" href="#"><span class="material-symbols-outlined text-[20px]">rate_review</span><span class="font-body-md text-body-md">Feedback</span></a></div></div></aside><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary-container font-semibold"><div class="h-16 px-gutter-mobile flex justify-around items-center"><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-colors text-primary-container font-semibold" data-path="student-dashboard" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm mt-0.5">Dashboard</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="campus-announcements" href="#"><span class="material-symbols-outlined text-[22px]">campaign</span><span class="font-label-sm text-label-sm mt-0.5">Notices</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="events-directory" href="#"><span class="material-symbols-outlined text-[22px]">event</span><span class="font-label-sm text-label-sm mt-0.5">Events</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="campus-services" href="#"><span class="material-symbols-outlined text-[22px]">grid_view</span><span class="font-label-sm text-label-sm mt-0.5">Services</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="academic-calendar" href="#"><span class="material-symbols-outlined text-[22px]">calendar_month</span><span class="font-label-sm text-label-sm mt-0.5">Calendar</span></a></div></nav><script>(function(){const drawer=document.getElementById('side-drawer');const backdrop=document.getElementById('drawer-backdrop');const openBtn=document.getElementById('menu-open-btn');const closeBtn=document.getElementById('drawer-close-btn');const aiFab=document.getElementById('ai-fab-btn');const aiSheet=document.getElementById('ai-sheet');const aiClose=document.getElementById('ai-sheet-close');function toggleDrawer(open){if(open){drawer.classList.add('open');backdrop.classList.add('open');}else{drawer.classList.remove('open');backdrop.classList.remove('open');}}if(openBtn)openBtn.addEventListener('click',()=>toggleDrawer(true));if(closeBtn)closeBtn.addEventListener('click',()=>toggleDrawer(false));if(backdrop)backdrop.addEventListener('click',()=>toggleDrawer(false));if(aiFab&&aiSheet){aiFab.addEventListener('click',()=>{aiSheet.classList.toggle('open');});}if(aiClose&&aiSheet){aiClose.addEventListener('click',()=>{aiSheet.classList.remove('open');});}})();</script></body></html>

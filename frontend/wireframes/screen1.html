@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/><meta content="mobile_tab" name="shell-type"/><style>@layer base{html,body{width:100vw;margin:0;padding:0;background-color:#f7f9fc;}body{overscroll-behavior:none;}.pb-safe{padding-bottom:env(safe-area-inset-bottom,0px);}.pt-safe{padding-top:env(safe-area-inset-top,0px);}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}#side-drawer.open{transform:translateX(0);}#drawer-backdrop.open{opacity:1;pointer-events:auto;}#ai-sheet.open{transform:translateY(0);}</style><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Roboto+Flex:wght@400;500;600&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&family=Roboto+Flex:wght@100..900&display=swap" rel="stylesheet"/><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"primary-container":"#c8102e","on-surface-variant":"#5c403f","tertiary":"#394d6d","surface-container-high":"#e6e8eb","on-tertiary":"#ffffff","inverse-on-surface":"#eff1f4","primary-fixed":"#ffdad8","on-primary-container":"#ffdad8","surface":"#f7f9fc","outline-variant":"#e5bdbb","secondary-container":"#63a1ff","on-error-container":"#93000a","surface-container-highest":"#e0e3e6","surface-container-low":"#f2f4f7","surface-container-lowest":"#ffffff","on-secondary-container":"#00376f","on-secondary-fixed":"#001b3d","secondary-fixed":"#d6e3ff","on-tertiary-fixed-variant":"#334767","error-container":"#ffdad6","on-surface":"#191c1e","on-tertiary-fixed":"#031c39","tertiary-fixed-dim":"#b3c7ee","secondary":"#005db6","tertiary-container":"#516587","inverse-surface":"#2d3133","primary-fixed-dim":"#ffb3b1","on-primary-fixed-variant":"#92001c","on-secondary-fixed-variant":"#00468c","surface-dim":"#d8dadd","on-primary":"#ffffff","surface-tint":"#bf0229","secondary-fixed-dim":"#a9c7ff","tertiary-fixed":"#d5e3ff","primary":"#9e001f","inverse-primary":"#ffb3b1","background":"#f7f9fc","on-error":"#ffffff","surface-container":"#eceef1","surface-variant":"#e0e3e6","on-primary-fixed":"#410007","on-secondary":"#ffffff","surface-bright":"#f7f9fc","error":"#ba1a1a","outline":"#906f6e","on-background":"#191c1e","on-tertiary-container":"#d5e2ff"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-xs":"0.25rem","space-sm":"0.5rem","margin":"2rem","margin-mobile":"1rem","space-lg":"1.5rem","space-xl":"2rem","gutter-mobile":"1rem","space-md":"1rem","gutter":"1.5rem"},"fontFamily":{"label-lg":["Montserrat"],"stat-display":["Montserrat"],"label-sm":["Montserrat"],"headline-lg":["Montserrat"],"display-lg":["Montserrat"],"body-sm":["Roboto Flex"],"headline-sm":["Montserrat"],"headline-md":["Montserrat"],"body-md":["Roboto Flex"],"body-lg":["Roboto Flex"],"label-md":["Montserrat"],"display-lg-mobile":["Montserrat"]},"fontSize":{"label-lg":["0.875rem",{"lineHeight":"1.25rem","letterSpacing":"0.02em","fontWeight":"600"}],"stat-display":["2rem",{"lineHeight":"2.25rem","fontWeight":"700"}],"label-sm":["0.6875rem",{"lineHeight":"0.875rem","letterSpacing":"0.04em","fontWeight":"500"}],"headline-lg":["1.5rem",{"lineHeight":"2rem","letterSpacing":"-0.01em","fontWeight":"600"}],"display-lg":["2.25rem",{"lineHeight":"2.75rem","letterSpacing":"-0.02em","fontWeight":"700"}],"body-sm":["0.875rem",{"lineHeight":"1.25rem","fontWeight":"400"}],"headline-sm":["1.125rem",{"lineHeight":"1.5rem","fontWeight":"600"}],"headline-md":["1.25rem",{"lineHeight":"1.75rem","fontWeight":"600"}],"body-md":["1rem",{"lineHeight":"1.5rem","fontWeight":"400"}],"body-lg":["1.125rem",{"lineHeight":"1.75rem","fontWeight":"400"}],"label-md":["0.75rem",{"lineHeight":"1rem","letterSpacing":"0.03em","fontWeight":"600"}],"display-lg-mobile":["1.75rem",{"lineHeight":"2.25rem","letterSpacing":"-0.01em","fontWeight":"700"}]}}}};</script><style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head><body class="bg-surface text-on-surface font-body-md min-h-screen flex flex-col antialiased selection:bg-primary selection:text-on-primary"><div class="fixed top-0 inset-x-0 h-1 bg-primary-container z-[60]"></div><header class="fixed top-0 w-full z-50 bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] pt-safe"><div class="h-28 px-gutter-mobile flex flex-col justify-center gap-space-xs"><div class="flex items-center justify-between gap-space-sm"><div class="flex items-center gap-space-sm"><button aria-label="Open Navigation Menu" class="w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container-low active:bg-surface-container-high transition-colors" id="menu-open-btn" type="button"><span class="material-symbols-outlined text-[24px]">menu</span></button><div class="flex items-center gap-space-xs"><img alt="UniHub Official University Logo" class="h-8 w-auto object-contain" src="https://lh3.googleusercontent.com/aida/AEtjO1VZhc8Y_j1Yqp8TITsvv6FhQN7VbZuYQ1IeEAV15NiSJA-X_q4VsDY_NI6JB9Wo8DUov2nRmqcCaDKUkCFgGYtVX2NVDhzuE-Olzcnjc87Zlnz0bKqcQ7c6OQxZuzXV9ajfnoopJaDB5-OSAHFge6N2Fg_CmXXZJD3nK1rGGDzAN4dBHi5Dc4e0CLSwoteESdNF9En54_qXQS4je6xx0QVJXGwFeK8mxJ8KXmQI4pSokKgWC7mSkBZwznc"/><div class="flex flex-col"><span class="font-label-md text-label-md text-primary leading-none uppercase">UniHub</span><span class="font-label-sm text-label-sm text-on-surface-variant font-medium tracking-tight">Univ. of Lancashire</span></div></div></div><div class="flex items-center gap-space-xs"><button aria-label="Notifications" class="relative w-11 h-11 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container-low transition-colors" type="button"><span class="material-symbols-outlined text-[24px]">notifications</span><span class="absolute top-2 right-2 flex items-center justify-center min-w-[18px] h-[18px] px-1 bg-primary-container text-on-primary font-label-sm text-[10px] font-bold rounded-full shadow-[0_1px_3px_rgba(200,16,46,0.3)]">3</span></button><a aria-label="Student Profile" class="w-11 h-11 flex items-center justify-center" data-path="student-profile" href="#"><img alt="Profile" class="w-8 h-8 rounded-full object-cover ring-2 ring-primary/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65ce61SUjUxxiX4mG4b83oudCa0PmTm1DysNqmLV0XNOqmN7wP3s0bmHvqHlhAgTSm6cQyZ9YIduSZyv3yscjqEjgyOVDOqa_rix1tCGfUVkgnRqVEb4nJU3HdVfDn84DaEDMMlfTFKuOCdk9Z1M_rFwlN6GXG4eNFRqLwjIng2phZ-HxRWOr65k3sW6tT8W_MuvCa01Kw61YvaHO4Upn8XhrD4L5bWkpllM4Gb1faogEtvkaX8u_"/></a></div></div><div class="relative flex items-center w-full"><span class="material-symbols-outlined absolute left-3 text-on-surface-variant text-[20px] pointer-events-none">search</span><input class="w-full h-10 pl-10 pr-4 bg-surface-container-low rounded-lg text-on-surface font-body-sm text-body-sm placeholder:text-on-surface-variant/70 focus:outline-none focus:bg-surface-container-lowest focus:ring-2 focus:ring-secondary/30 transition-all" placeholder="Search events, announcements, services, societies..." type="search"/></div></div></header><main class="flex flex-col relative w-full pt-28 pb-28 bg-surface"><div class="flex flex-col w-full px-gutter-mobile space-y-space-md">
+<!-- Header Section with Delightful Accent -->
+<section class="flex flex-col pt-space-sm">
+<div class="flex items-center justify-between">
+<div class="inline-flex items-center gap-space-xs px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span class="font-label-sm text-label-sm">Live Dispatch</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> 5 New Today
+      </span>
+</div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface tracking-tight mt-1">Campus Announcements</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Official university notices, timely alerts & personalized cohort updates.</p>
+</section>
+<!-- Live Search Box -->
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px] pointer-events-none">manage_search</span>
+<input class="w-full h-11 pl-11 pr-10 rounded-xl bg-surface-container-lowest shadow-sm text-on-surface font-body-sm text-body-sm placeholder:text-on-surface-variant/60 focus:outline-none focus:bg-surface-container-low transition-all" id="announcement-search" placeholder="Filter by topic, school, or keyword..." type="search"/>
+<button class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface" id="clear-search-btn">
+<span class="material-symbols-outlined text-[18px]">cancel</span>
+</button>
+</div>
+<!-- Audience Horizontal Segment Tabs -->
+<div class="flex flex-col space-y-space-xs">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-semibold">Audience Scope</span>
+<div class="flex gap-space-xs overflow-x-auto pb-1 no-scrollbar" id="audience-filters">
+<button class="audience-pill whitespace-nowrap px-3.5 py-2 rounded-xl font-label-md text-label-md transition-all flex items-center gap-1.5 bg-surface-container-low text-on-surface-variant" data-audience="all">
+<span>All audiences</span>
+<span class="px-1.5 py-0.5 rounded-full text-[10px] bg-surface-container-high text-on-surface">14</span>
+</button>
+<button class="audience-pill active whitespace-nowrap px-3.5 py-2 rounded-xl font-label-md text-label-md transition-all flex items-center gap-1.5 bg-secondary text-on-secondary shadow-sm" data-audience="targeted">
+<span class="material-symbols-outlined text-[14px]">person_pin</span>
+<span>Targeted to me</span>
+<span class="px-1.5 py-0.5 rounded-full text-[10px] bg-secondary-container text-on-secondary-container font-bold">5</span>
+</button>
+<button class="audience-pill whitespace-nowrap px-3.5 py-2 rounded-xl font-label-md text-label-md transition-all flex items-center gap-1.5 bg-surface-container-low text-on-surface-variant" data-audience="uni-wide">
+<span>University-wide</span>
+<span class="px-1.5 py-0.5 rounded-full text-[10px] bg-surface-container-high text-on-surface">9</span>
+</button>
+</div>
+</div>
+<!-- Category Pills Flow -->
+<div class="flex gap-space-xs overflow-x-auto pb-1 no-scrollbar" id="category-filters">
+<button class="cat-pill active px-3 py-1.5 rounded-full font-label-sm text-label-sm transition-colors bg-primary-container text-on-primary" data-category="all">All categories</button>
+<button class="cat-pill px-3 py-1.5 rounded-full font-label-sm text-label-sm transition-colors bg-surface-container-lowest text-on-surface-variant shadow-sm hover:bg-surface-container-low" data-category="Academic">Academic</button>
+<button class="cat-pill px-3 py-1.5 rounded-full font-label-sm text-label-sm transition-colors bg-surface-container-lowest text-on-surface-variant shadow-sm hover:bg-surface-container-low" data-category="Student life">Student life</button>
+<button class="cat-pill px-3 py-1.5 rounded-full font-label-sm text-label-sm transition-colors bg-surface-container-lowest text-on-surface-variant shadow-sm hover:bg-surface-container-low" data-category="Services">Services</button>
+<button class="cat-pill px-3 py-1.5 rounded-full font-label-sm text-label-sm transition-colors bg-surface-container-lowest text-on-surface-variant shadow-sm hover:bg-surface-container-low" data-category="Campus Facilities">Campus Facilities</button>
+</div>
+<!-- Announcement Feed Cards -->
+<div class="flex flex-col space-y-space-md pb-6" id="announcement-list">
+<!-- Card 1: FYP Briefing (Targeted) -->
+<article class="announcement-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md active:scale-[0.99] flex flex-col space-y-space-sm" data-audience="targeted" data-category="Academic" onclick="openDetailModal('card-1')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">my_location</span> Targeted to you
+          </span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-[11px]">Academic</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 2h ago
+        </span>
+</div>
+<div class="flex flex-col space-y-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug">
+          Final-year project proposal briefing & ethics approval
+        </h2>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[15px] text-primary">account_balance</span>
+<span>School of Computing & Engineering</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Mandatory protocol session for all computing cohorts submitting ethical approval dossiers. Please download the revised 2024 handbook and register your defense team before Friday noon.
+      </p>
+<div class="relative w-full h-36 rounded-lg overflow-hidden mt-1 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="University computer laboratory lecture theater with modern monitors, students in deep consultation with academic professors discussing software architecture, crisp natural cinematic lighting, institutional palette with navy and crimson accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9y0ohvhSvoVg4DUjTAeLTDwVv0UkdTrJEkpamFlHUniFJcb2val9mKCWZxoPo3CWZ5s9W2OUwWGsEio8F_ixyml_eCQ7TUPsv2Ev7KPMHIh3Khb0sqTuGxjUsvAuOaPvV4tzOHuK7disRjyT7V6tNKCRIf75xiNwSZ5L2JdImCNkkd2Yono75hNESnGySykuptHwZfw5nf52vSlH52AfKSnU-YtMVhxLoPPiuy14VwIZGOD7ejzkN"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#071F3D]/80 via-transparent to-transparent flex items-end p-2.5">
+<span class="font-label-sm text-label-sm text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">attachment</span> Ethics_Protocol_v3.pdf included
+          </span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1 font-semibold group-hover:underline">
+          View full announcement
+          <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+<button aria-label="Quick bookmark" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" onclick="event.stopPropagation(); quickBookmark(this, 'Final-year project proposal briefing');" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 2: Campus Shuttle Updates (University-wide) -->
+<article class="announcement-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md active:scale-[0.99] flex flex-col space-y-space-sm" data-audience="uni-wide" data-category="Services" onclick="openDetailModal('card-2')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[13px]">public</span> University-wide
+          </span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-[11px]">Services</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 5h ago
+        </span>
+</div>
+<div class="flex flex-col space-y-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug">
+          Campus Shuttle Bus Schedule Updates: Autumn Term
+        </h2>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[15px] text-tertiary">departure_board</span>
+<span>Estate Services</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Enhanced morning frequencies between North Gate, Student Village, and Victoria Hall. Two zero-emission electric coaches added to peak hours with live tracking on UniHub GPS map.
+      </p>
+<div class="flex items-center justify-between pt-1 text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1 font-semibold group-hover:underline">
+          View full announcement
+          <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+<button aria-label="Quick bookmark" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" onclick="event.stopPropagation(); quickBookmark(this, 'Campus Shuttle Bus Schedule');" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 3: Autumn Careers Fair (Targeted) -->
+<article class="announcement-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md active:scale-[0.99] flex flex-col space-y-space-sm" data-audience="targeted" data-category="Student life" onclick="openDetailModal('card-3')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary text-on-secondary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[13px]">my_location</span> Targeted to you
+          </span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-[11px]">Student life</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 1d ago
+        </span>
+</div>
+<div class="flex flex-col space-y-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug">
+          Autumn Careers Fair 2024: 60+ Top Tech Employers
+        </h2>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[15px] text-secondary">work_outline</span>
+<span>Careers & Employability Hub</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Exclusive direct access for Computing and Design finalists. Bring digital portfolios for on-the-spot internship interviews with tier-1 engineering firms and startup founders.
+      </p>
+<div class="relative w-full h-36 rounded-lg overflow-hidden mt-1 shadow-inner">
+<img class="w-full h-full object-cover" data-alt="Vibrant modern university job fair inside a glass atrium hall, high-tech company booths, students networking with recruiter representatives, ambient warm sunlight, corporate professional atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuByOLB4WnZ_2xTGMAKVig_VzVAG6tVcz31gecHMFMZVg0Sh4o4R2RixXIGkPZ-qHeu5ueeZb3teKwC91hZold7TyapsvKvb_TkZoPmM1YIJDDo3XkXOvDEEJSZBYiE8SefRUMEr5g6tFWzvNDt8t7Hfaz1r2tyWc9pssgWfxu6PuSiZ0CR8eT8bfRi8GCQ5Ifn_uWTPy7ByYZVOGAGm7kDwDkhopapK3Ye0BnhVH8RX40iqknHdfMgW"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#071F3D]/80 via-transparent to-transparent flex items-end p-2.5">
+<span class="font-label-sm text-label-sm text-white flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">qr_code_2</span> Fast-track badge passes available
+          </span>
+</div>
+</div>
+<div class="flex items-center justify-between pt-1 text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1 font-semibold group-hover:underline">
+          View full announcement
+          <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+<button aria-label="Quick bookmark" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" onclick="event.stopPropagation(); quickBookmark(this, 'Autumn Careers Fair 2024');" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Card 4: Mental Wellbeing & Counseling (University-wide) -->
+<article class="announcement-card group relative bg-surface-container-lowest rounded-xl p-space-md shadow-sm transition-all hover:shadow-md active:scale-[0.99] flex flex-col space-y-space-sm" data-audience="uni-wide" data-category="Services" onclick="openDetailModal('card-4')">
+<div class="flex items-start justify-between gap-space-sm">
+<div class="flex flex-wrap items-center gap-1.5">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-medium">
+<span class="material-symbols-outlined text-[13px]">public</span> University-wide
+          </span>
+<span class="px-2 py-0.5 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-[11px]">Services</span>
+</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant flex items-center gap-1 shrink-0">
+<span class="material-symbols-outlined text-[14px]">schedule</span> 2d ago
+        </span>
+</div>
+<div class="flex flex-col space-y-1">
+<h2 class="font-headline-sm text-headline-sm text-on-surface group-hover:text-primary transition-colors leading-snug">
+          University Mental Wellbeing & Counseling Drop-in Hours
+        </h2>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[15px] text-tertiary">spa</span>
+<span>Student Welfare</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2">
+        Confidential, one-on-one drop-in sessions now available both in-person at Student Wellbeing Sanctuary and via encrypted video telehealth appointments Monday through Saturday.
+      </p>
+<div class="flex items-center justify-between pt-1 text-secondary font-label-sm text-label-sm">
+<span class="flex items-center gap-1 font-semibold group-hover:underline">
+          View full announcement
+          <span class="material-symbols-outlined text-[16px] transition-transform group-hover:translate-x-1">arrow_forward</span>
+</span>
+<button aria-label="Quick bookmark" class="p-2 rounded-lg text-on-surface-variant hover:bg-surface-container-low transition-colors" onclick="event.stopPropagation(); quickBookmark(this, 'Mental Wellbeing Drop-in Hours');" type="button">
+<span class="material-symbols-outlined text-[20px]">bookmark_border</span>
+</button>
+</div>
+</article>
+<!-- Empty State (Hidden by default, triggered on no filter matches) -->
+<div class="hidden flex-col items-center justify-center p-8 bg-surface-container-lowest rounded-xl text-center space-y-space-sm shadow-sm" id="empty-state">
+<div class="w-14 h-14 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]">notifications_paused</span>
+</div>
+<h3 class="font-headline-sm text-headline-sm text-on-surface">No notices found</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant max-w-[260px]">
+        No announcements match your search or filter criteria. Try resetting your filters.
+      </p>
+<button class="px-4 py-2 rounded-lg bg-surface-container text-secondary font-label-md text-label-md hover:bg-surface-container-high transition-colors" onclick="resetAllFilters()">
+        Reset filters
+      </button>
+</div>
+</div>
+<!-- Detail Modal Sheet Backdrop -->
+<div class="fixed inset-0 bg-[#071F3D]/60 backdrop-blur-sm z-[70] opacity-0 pointer-events-none transition-opacity duration-300" id="detail-backdrop"></div>
+<!-- Expandable Detail Modal / Sheet -->
+<div class="fixed inset-x-0 bottom-0 max-w-lg mx-auto z-[80] bg-surface-container-lowest rounded-t-2xl shadow-2xl transform translate-y-full transition-transform duration-300 ease-out max-h-[777px] flex flex-col" id="detail-sheet">
+<!-- Drag pill -->
+<div class="pt-3 pb-1 flex justify-center cursor-pointer" onclick="closeDetailModal()">
+<div class="w-12 h-1.5 bg-surface-container-highest rounded-full"></div>
+</div>
+<!-- Sheet Header -->
+<div class="px-space-md py-space-sm flex items-center justify-between bg-surface-container-low">
+<div class="flex items-center gap-space-xs">
+<span class="px-2.5 py-0.5 rounded-full font-label-sm text-[11px] font-semibold bg-secondary text-on-secondary" id="modal-badge">Targeted to you</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="modal-category">Academic</span>
+</div>
+<button aria-label="Close details" class="w-8 h-8 rounded-lg flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors" onclick="closeDetailModal()">
+<span class="material-symbols-outlined text-[20px]">close</span>
+</button>
+</div>
+<!-- Sheet Body -->
+<div class="p-space-md overflow-y-auto space-y-space-md flex-1">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface leading-tight" id="modal-title">
+          Final-year project proposal briefing & ethics approval
+        </h2>
+<div class="flex items-center gap-space-sm mt-3 pt-2 text-on-surface-variant">
+<img alt="Official Author" class="w-10 h-10 rounded-full object-cover shadow-sm" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65ce61SUjUxxiX4mG4b83oudCa0PmTm1DysNqmLV0XNOqmN7wP3s0bmHvqHlhAgTSm6cQyZ9YIduSZyv3yscjqEjgyOVDOqa_rix1tCGfUVkgnRqVEb4nJU3HdVfDn84DaEDMMlfTFKuOCdk9Z1M_rFwlN6GXG4eNFRqLwjIng2phZ-HxRWOr65k3sW6tT8W_MuvCa01Kw61YvaHO4Upn8XhrD4L5bWkpllM4Gb1faogEtvkaX8u_"/>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface font-semibold" id="modal-author">Dr. Alistair Vance</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant" id="modal-dept">School of Computing & Engineering • 2 hrs ago</span>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low p-space-sm rounded-xl space-y-space-xs">
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-secondary">Summary & Instructions</span>
+<p class="font-body-md text-body-md text-on-surface" id="modal-body">
+          All Year 3 and Honours cohorts must register attendance for this Friday's ethical committee seminar in Maxwell Hall (or stream on Microsoft Teams). Supervisors will not sign off on final artifact development without prior ethics certificate clearance code.
+        </p>
+</div>
+<!-- Attachments Download Box -->
+<div class="space-y-space-xs">
+<span class="font-label-sm text-label-sm font-semibold uppercase tracking-wider text-on-surface-variant">Official Attachments (2)</span>
+<div class="space-y-2">
+<a class="flex items-center justify-between p-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group" href="#download" onclick="simulateDownload(event, 'Ethics_Application_Form_2024.pdf')">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-[22px]">picture_as_pdf</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary font-medium">Ethics_Application_Form_2024.pdf</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">PDF Document • 1.4 MB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[20px]">download</span>
+</a>
+<a class="flex items-center justify-between p-3 rounded-xl bg-surface-container hover:bg-surface-container-high transition-colors group" href="#download" onclick="simulateDownload(event, 'FYP_Schedule_Milestones.xlsx')">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-tertiary text-[22px]">table_chart</span>
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface group-hover:text-primary font-medium">FYP_Schedule_Milestones.xlsx</span>
+<span class="font-body-sm text-[11px] text-on-surface-variant">Spreadsheet • 420 KB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-secondary text-[20px]">download</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Sheet Sticky Action Bar -->
+<div class="p-space-md bg-surface-container-lowest shadow-[0_-4px_16px_rgba(0,0,0,0.04)] flex gap-space-sm">
+<button class="flex-1 h-11 rounded-xl bg-primary-container text-on-primary font-label-lg text-label-lg shadow-sm hover:opacity-95 active:scale-95 transition-all flex items-center justify-center gap-2" id="modal-save-btn" onclick="toggleSaveCurrentModal()">
+<span class="material-symbols-outlined text-[18px]">bookmark_add</span>
+<span id="modal-save-text">Save announcement</span>
+</button>
+<button aria-label="Share notice" class="w-11 h-11 rounded-xl bg-surface-container-high text-on-surface flex items-center justify-center active:scale-95 transition-all" onclick="shareAnnouncement()">
+<span class="material-symbols-outlined text-[20px]">share</span>
+</button>
+</div>
+</div>
+<!-- Feedback Toast Notification -->
+<div class="fixed bottom-28 left-1/2 -translate-x-1/2 z-[90] px-4 py-2.5 rounded-full bg-inverse-surface text-inverse-on-surface shadow-xl flex items-center gap-2 transform translate-y-8 opacity-0 pointer-events-none transition-all duration-300" id="toast">
+<span class="material-symbols-outlined text-[18px] text-secondary-fixed" id="toast-icon">bookmark</span>
+<span class="font-label-md text-label-md" id="toast-text">Announcement saved to your hub</span>
+</div>
+</div>
+<script>
+  // Comprehensive card metadata for detail drawers
+  const announcementData = {
+    'card-1': {
+      title: 'Final-year project proposal briefing & ethics approval',
+      audienceBadge: 'Targeted to you',
+      badgeClass: 'bg-secondary text-on-secondary',
+      category: 'Academic',
+      author: 'Dr. Alistair Vance',
+      dept: 'School of Computing & Engineering · 2 hrs ago',
+      body: 'Mandatory protocol session for all computing cohorts submitting ethical approval dossiers. Supervisors will not authorize laboratory testing or user interview trials without certified IRB sign-off. Please review the updated milestones, prepare your project proposal abstract, and register defense dates before Friday noon.'
+    },
+    'card-2': {
+      title: 'Campus Shuttle Bus Schedule Updates: Autumn Term',
+      audienceBadge: 'University-wide',
+      badgeClass: 'bg-surface-container-high text-on-surface-variant',
+      category: 'Services',
+      author: 'Clara Oswald',
+      dept: 'Estate Services & Transport · 5 hrs ago',
+      body: 'To accommodate expanded evening library hours and laboratory shifts, the Campus Shuttle fleet is transitioning to the Autumn Term timetable effective Monday. Extra shuttle runs operate every 10 minutes from 07:30 to 10:00 and 16:30 to 19:30. View real-time GPS telemetry in the UniHub Transit tab.'
+    },
+    'card-3': {
+      title: 'Autumn Careers Fair 2024: 60+ Top Tech Employers',
+      audienceBadge: 'Targeted to you',
+      badgeClass: 'bg-secondary text-on-secondary',
+      category: 'Student life',
+      author: 'Marcus Aurel',
+      dept: 'Careers & Employability Hub · 1 day ago',
+      body: 'Over sixty premier employers spanning AI research labs, aerospace telemetry, fintech, and digital product studios will convene in the Great Hall. Final-year students are eligible for direct VIP queue bypass. Make sure your digital student credentials and portfolio links are uploaded to your profile.'
+    },
+    'card-4': {
+      title: 'University Mental Wellbeing & Counseling Drop-in Hours',
+      audienceBadge: 'University-wide',
+      badgeClass: 'bg-surface-container-high text-on-surface-variant',
+      category: 'Services',
+      author: 'Rachel Finch',
+      dept: 'Student Welfare & Pastoral Care · 2 days ago',
+      body: 'Balancing deadlines, coursework, and personal life can be overwhelming. The Student Wellbeing Sanctuary offers confidential drop-in consultations with licensed counselors every weekday from 09:00 to 17:00, with no booking required. Virtual telehealth chat slots are also available 24/7.'
+    }
+  };
+
+  let activeAudience = 'targeted';
+  let activeCategory = 'all';
+  let searchQuery = '';
+  let activeModalKey = 'card-1';
+  let savedAnnouncements = new Set();
+
+  function triggerFilterFeed() {
+    const cards = document.querySelectorAll('.announcement-card');
+    let visibleCount = 0;
+
+    cards.forEach(card => {
+      const cardAudience = card.getAttribute('data-audience');
+      const cardCategory = card.getAttribute('data-category');
+      const cardText = card.innerText.toLowerCase();
+
+      const matchesAudience = (activeAudience === 'all') || (cardAudience === activeAudience);
+      const matchesCategory = (activeCategory === 'all') || (cardCategory === activeCategory);
+      const matchesSearch = searchQuery === '' || cardText.includes(searchQuery.toLowerCase());
+
+      if (matchesAudience && matchesCategory && matchesSearch) {
+        card.classList.remove('hidden');
+        card.classList.add('flex');
+        visibleCount++;
+      } else {
+        card.classList.add('hidden');
+        card.classList.remove('flex');
+      }
+    });
+
+    const emptyState = document.getElementById('empty-state');
+    if (visibleCount === 0) {
+      emptyState.classList.remove('hidden');
+      emptyState.classList.add('flex');
+    } else {
+      emptyState.classList.add('hidden');
+      emptyState.classList.remove('flex');
+    }
+  }
+
+  // Audience Pill Listeners
+  document.querySelectorAll('.audience-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.audience-pill').forEach(p => {
+        p.classList.remove('bg-secondary', 'text-on-secondary', 'shadow-sm');
+        p.classList.add('bg-surface-container-low', 'text-on-surface-variant');
+        const badge = p.querySelector('span:last-child');
+        if (badge) {
+          badge.className = 'px-1.5 py-0.5 rounded-full text-[10px] bg-surface-container-high text-on-surface font-normal';
+        }
+      });
+
+      pill.classList.remove('bg-surface-container-low', 'text-on-surface-variant');
+      pill.classList.add('bg-secondary', 'text-on-secondary', 'shadow-sm');
+      const activeBadge = pill.querySelector('span:last-child');
+      if (activeBadge) {
+        activeBadge.className = 'px-1.5 py-0.5 rounded-full text-[10px] bg-secondary-container text-on-secondary-container font-bold';
+      }
+
+      activeAudience = pill.getAttribute('data-audience');
+      triggerFilterFeed();
+    });
+  });
+
+  // Category Pill Listeners
+  document.querySelectorAll('.cat-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.cat-pill').forEach(p => {
+        p.classList.remove('bg-primary-container', 'text-on-primary');
+        p.classList.add('bg-surface-container-lowest', 'text-on-surface-variant', 'shadow-sm');
+      });
+
+      pill.classList.remove('bg-surface-container-lowest', 'text-on-surface-variant', 'shadow-sm');
+      pill.classList.add('bg-primary-container', 'text-on-primary');
+
+      activeCategory = pill.getAttribute('data-category');
+      triggerFilterFeed();
+    });
+  });
+
+  // Search Live Input
+  const searchInput = document.getElementById('announcement-search');
+  const clearBtn = document.getElementById('clear-search-btn');
+
+  searchInput.addEventListener('input', (e) => {
+    searchQuery = e.target.value.trim();
+    if (searchQuery.length > 0) {
+      clearBtn.classList.remove('hidden');
+    } else {
+      clearBtn.classList.add('hidden');
+    }
+    triggerFilterFeed();
+  });
+
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    searchQuery = '';
+    clearBtn.classList.add('hidden');
+    triggerFilterFeed();
+  });
+
+  function resetAllFilters() {
+    searchInput.value = '';
+    searchQuery = '';
+    clearBtn.classList.add('hidden');
+    
+    // reset audience to all
+    const allAudiencePill = document.querySelector('[data-audience="all"]');
+    if (allAudiencePill) allAudiencePill.click();
+
+    // reset category to all
+    const allCatPill = document.querySelector('[data-category="all"]');
+    if (allCatPill) allCatPill.click();
+  }
+
+  // Detail Modal Controls
+  function openDetailModal(cardKey) {
+    activeModalKey = cardKey;
+    const data = announcementData[cardKey];
+    if (!data) return;
+
+    document.getElementById('modal-title').textContent = data.title;
+    document.getElementById('modal-category').textContent = data.category;
+    document.getElementById('modal-author').textContent = data.author;
+    document.getElementById('modal-dept').textContent = data.dept;
+    document.getElementById('modal-body').textContent = data.body;
+
+    const badge = document.getElementById('modal-badge');
+    badge.textContent = data.audienceBadge;
+    badge.className = 'px-2.5 py-0.5 rounded-full font-label-sm text-[11px] font-semibold ' + data.badgeClass;
+
+    const saveText = document.getElementById('modal-save-text');
+    if (savedAnnouncements.has(cardKey)) {
+      saveText.textContent = 'Saved in Hub';
+    } else {
+      saveText.textContent = 'Save announcement';
+    }
+
+    const sheet = document.getElementById('detail-sheet');
+    const backdrop = document.getElementById('detail-backdrop');
+    sheet.classList.remove('translate-y-full');
+    sheet.classList.add('translate-y-0');
+    backdrop.classList.remove('opacity-0', 'pointer-events-none');
+    backdrop.classList.add('opacity-100', 'pointer-events-auto');
+  }
+
+  function closeDetailModal() {
+    const sheet = document.getElementById('detail-sheet');
+    const backdrop = document.getElementById('detail-backdrop');
+    sheet.classList.add('translate-y-full');
+    sheet.classList.remove('translate-y-0');
+    backdrop.classList.add('opacity-0', 'pointer-events-none');
+    backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+  }
+
+  document.getElementById('detail-backdrop').addEventListener('click', closeDetailModal);
+
+  // Toast Functionality
+  let toastTimer;
+  function showToast(message, iconName = 'bookmark_added') {
+    const toast = document.getElementById('toast');
+    const text = document.getElementById('toast-text');
+    const icon = document.getElementById('toast-icon');
+
+    text.textContent = message;
+    icon.textContent = iconName;
+
+    clearTimeout(toastTimer);
+    toast.classList.remove('translate-y-8', 'opacity-0', 'pointer-events-none');
+    toast.classList.add('translate-y-0', 'opacity-100');
+
+    toastTimer = setTimeout(() => {
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-8', 'opacity-0', 'pointer-events-none');
+    }, 2400);
+  }
+
+  function toggleSaveCurrentModal() {
+    const saveText = document.getElementById('modal-save-text');
+    if (savedAnnouncements.has(activeModalKey)) {
+      savedAnnouncements.delete(activeModalKey);
+      saveText.textContent = 'Save announcement';
+      showToast('Removed from saved notices', 'bookmark_remove');
+    } else {
+      savedAnnouncements.add(activeModalKey);
+      saveText.textContent = 'Saved in Hub';
+      showToast('Announcement saved to your hub!', 'bookmark_added');
+    }
+  }
+
+  function quickBookmark(btn, title) {
+    const icon = btn.querySelector('.material-symbols-outlined');
+    if (icon.textContent === 'bookmark_border') {
+      icon.textContent = 'bookmark';
+      icon.classList.add('text-primary');
+      showToast('Saved: "' + title.slice(0, 24) + '..."', 'bookmark_added');
+    } else {
+      icon.textContent = 'bookmark_border';
+      icon.classList.remove('text-primary');
+      showToast('Removed bookmark', 'bookmark_remove');
+    }
+  }
+
+  function simulateDownload(e, filename) {
+    e.preventDefault();
+    showToast('Downloading ' + filename + '...', 'download_done');
+  }
+
+  function shareAnnouncement() {
+    if (navigator.share) {
+      navigator.share({
+        title: 'UniHub Announcement',
+        text: document.getElementById('modal-title').textContent,
+        url: window.location.href
+      }).catch(() => {});
+    } else {
+      showToast('Notice link copied to clipboard', 'content_copy');
+    }
+  }
+
+  // Initialize initial targeted feed view
+  triggerFilterFeed();
+</script></main><div class="fixed bottom-24 right-4 z-40"><button aria-label="Open UniHub Assistant" class="flex items-center gap-space-xs h-12 px-4 rounded-full bg-primary-container text-on-primary font-label-lg text-label-lg shadow-[0_4px_16px_rgba(200,16,46,0.35)] active:scale-95 transition-all" id="ai-fab-btn" type="button"><span class="material-symbols-outlined text-[20px]">auto_awesome</span><span>UniHub AI</span></button></div><div class="fixed inset-x-0 bottom-0 z-50 bg-surface-container-lowest rounded-t-xl shadow-[0_-4px_24px_rgba(7,31,61,0.12)] transform translate-y-full transition-transform duration-300 ease-out pb-safe max-w-md mx-auto" id="ai-sheet"><div class="p-space-md"><div class="w-12 h-1 bg-surface-container-highest rounded-full mx-auto mb-3"></div><div class="flex items-center justify-between mb-3"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-primary text-[22px]">smart_toy</span><h3 class="font-headline-sm text-headline-sm text-on-surface">UniHub Assistant</h3></div><button class="w-9 h-9 flex items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-low" id="ai-sheet-close" type="button"><span class="material-symbols-outlined text-[20px]">close</span></button></div><p class="font-body-sm text-body-sm text-on-surface-variant mb-4">Ask campus questions or pick a suggested topic:</p><div class="flex flex-wrap gap-space-xs mb-3"><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Next class location?</button><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Assignment deadlines</button><button class="px-3 py-1.5 rounded-full bg-surface-container-low text-secondary font-label-sm text-label-sm hover:bg-surface-container transition-colors" type="button">Book library pod</button></div></div></div><div class="fixed inset-0 bg-[#071F3D]/50 backdrop-blur-sm z-50 opacity-0 pointer-events-none transition-opacity duration-300" id="drawer-backdrop"></div><aside class="fixed top-0 left-0 bottom-0 w-[84%] max-w-[320px] bg-[#071F3D] text-white z-50 transform -translate-x-full transition-transform duration-300 ease-out flex flex-col pt-safe pb-safe shadow-[8px_0_32px_rgba(7,31,61,0.2)]" id="side-drawer"><div class="p-space-md flex items-center justify-between bg-black/10"><div class="flex items-center gap-space-xs"><img alt="UniHub Official University Logo" class="h-7 w-auto object-contain brightness-0 invert" src="https://lh3.googleusercontent.com/aida/AEtjO1VZhc8Y_j1Yqp8TITsvv6FhQN7VbZuYQ1IeEAV15NiSJA-X_q4VsDY_NI6JB9Wo8DUov2nRmqcCaDKUkCFgGYtVX2NVDhzuE-Olzcnjc87Zlnz0bKqcQ7c6OQxZuzXV9ajfnoopJaDB5-OSAHFge6N2Fg_CmXXZJD3nK1rGGDzAN4dBHi5Dc4e0CLSwoteESdNF9En54_qXQS4je6xx0QVJXGwFeK8mxJ8KXmQI4pSokKgWC7mSkBZwznc"/><div class="flex flex-col"><span class="font-label-md text-label-md text-white uppercase font-bold tracking-wide">UniHub</span><span class="font-label-sm text-label-sm text-white/60">Univ. of Lancashire</span></div></div><button class="w-10 h-10 flex items-center justify-center text-white/80 hover:text-white rounded-lg" id="drawer-close-btn" type="button"><span class="material-symbols-outlined text-[22px]">close</span></button></div><div class="px-space-md py-space-sm flex items-center gap-space-sm bg-white/5 mx-space-md my-space-sm rounded-lg"><img alt="Profile" class="w-10 h-10 rounded-full object-cover ring-2 ring-primary-container" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC65ce61SUjUxxiX4mG4b83oudCa0PmTm1DysNqmLV0XNOqmN7wP3s0bmHvqHlhAgTSm6cQyZ9YIduSZyv3yscjqEjgyOVDOqa_rix1tCGfUVkgnRqVEb4nJU3HdVfDn84DaEDMMlfTFKuOCdk9Z1M_rFwlN6GXG4eNFRqLwjIng2phZ-HxRWOr65k3sW6tT8W_MuvCa01Kw61YvaHO4Upn8XhrD4L5bWkpllM4Gb1faogEtvkaX8u_"/><div class="flex flex-col min-w-0"><span class="font-label-md text-label-md text-white font-semibold truncate">Isuru S.</span><span class="font-body-sm text-[11px] text-white/70 leading-tight truncate">Software Engineering · Y3</span><span class="font-body-sm text-[10px] text-white/50 truncate">Faculty of Computing</span></div></div><div class="flex-1 overflow-y-auto px-space-md py-space-xs space-y-space-md"><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Workspace</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="student-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">dashboard</span><span class="font-body-md text-body-md">Dashboard</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="campus-announcements" href="#"><span class="material-symbols-outlined text-[20px]">campaign</span><span class="font-body-md text-body-md">Announcements</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="events-directory" href="#"><span class="material-symbols-outlined text-[20px]">event</span><span class="font-body-md text-body-md">Events</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="societies-clubs" href="#"><span class="material-symbols-outlined text-[20px]">groups</span><span class="font-body-md text-body-md">Societies</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="lost-and-found" href="#"><span class="material-symbols-outlined text-[20px]">search_check</span><span class="font-body-md text-body-md">Lost & Found</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="academic-calendar" href="#"><span class="material-symbols-outlined text-[20px]">calendar_today</span><span class="font-body-md text-body-md">Academic Calendar</span></a></div><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Student Services</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="classroom-booking" href="#"><span class="material-symbols-outlined text-[20px]">meeting_room</span><span class="font-body-md text-body-md">Classroom Booking</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="academic-support" href="#"><span class="material-symbols-outlined text-[20px]">school</span><span class="font-body-md text-body-md">Academic Support</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="jobs-and-internships" href="#"><span class="material-symbols-outlined text-[20px]">work</span><span class="font-body-md text-body-md">Jobs & Internships</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="volunteering-portal" href="#"><span class="material-symbols-outlined text-[20px]">volunteer_activism</span><span class="font-body-md text-body-md">Volunteering</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="campus-services" href="#"><span class="material-symbols-outlined text-[20px]">storefront</span><span class="font-body-md text-body-md">Campus Services</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="staff-directory" href="#"><span class="material-symbols-outlined text-[20px]">badge</span><span class="font-body-md text-body-md">Staff Directory</span></a></div><div class="space-y-1"><span class="px-3 font-label-sm text-[11px] uppercase tracking-wider text-white/40 font-bold">Help</span><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="faqs" href="#"><span class="material-symbols-outlined text-[20px]">help</span><span class="font-body-md text-body-md">FAQs</span></a><a class="flex items-center gap-space-sm px-3 py-2 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors" data-path="student-feedback" href="#"><span class="material-symbols-outlined text-[20px]">rate_review</span><span class="font-body-md text-body-md">Feedback</span></a></div></div></aside><nav class="fixed bottom-0 w-full z-50 pb-safe bg-surface-container-lowest/95 backdrop-blur-xl shadow-[0_-2px_10px_rgba(0,0,0,0.05)]" data-active-classes="text-primary-container font-semibold"><div class="h-16 px-gutter-mobile flex justify-around items-center"><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="student-dashboard" href="#"><span class="material-symbols-outlined text-[22px]">dashboard</span><span class="font-label-sm text-label-sm mt-0.5">Dashboard</span></a><a aria-current="page" class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] transition-colors text-primary-container font-semibold" data-path="campus-announcements" href="#"><span class="material-symbols-outlined text-[22px]">campaign</span><span class="font-label-sm text-label-sm mt-0.5">Notices</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="events-directory" href="#"><span class="material-symbols-outlined text-[22px]">event</span><span class="font-label-sm text-label-sm mt-0.5">Events</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="campus-services" href="#"><span class="material-symbols-outlined text-[22px]">grid_view</span><span class="font-label-sm text-label-sm mt-0.5">Services</span></a><a class="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] text-on-surface-variant hover:text-on-surface transition-colors" data-path="academic-calendar" href="#"><span class="material-symbols-outlined text-[22px]">calendar_month</span><span class="font-label-sm text-label-sm mt-0.5">Calendar</span></a></div></nav><script>(function(){const drawer=document.getElementById('side-drawer');const backdrop=document.getElementById('drawer-backdrop');const openBtn=document.getElementById('menu-open-btn');const closeBtn=document.getElementById('drawer-close-btn');const aiFab=document.getElementById('ai-fab-btn');const aiSheet=document.getElementById('ai-sheet');const aiClose=document.getElementById('ai-sheet-close');function toggleDrawer(open){if(open){drawer.classList.add('open');backdrop.classList.add('open');}else{drawer.classList.remove('open');backdrop.classList.remove('open');}}if(openBtn)openBtn.addEventListener('click',()=>toggleDrawer(true));if(closeBtn)closeBtn.addEventListener('click',()=>toggleDrawer(false));if(backdrop)backdrop.addEventListener('click',()=>toggleDrawer(false));if(aiFab&&aiSheet){aiFab.addEventListener('click',()=>{aiSheet.classList.toggle('open');});}if(aiClose&&aiSheet){aiClose.addEventListener('click',()=>{aiSheet.classList.remove('open');});}})();</script></body></html>

@@ -1,97 +1,161 @@
 import axios from 'axios';
+import * as admin from 'firebase-admin';
+import { config } from '../config';
 
-export interface TextLkConfig {
-  apiKey: string;
-  apiEndpoint?: string;
-  senderId?: string;
+export interface SendSmsOptions {
+  flash?: boolean;
+  alertId?: string;
 }
 
-export interface SmsSendResult {
-  success: boolean;
-  recipient: string;
-  response?: any;
-  error?: string;
+export interface SmsBatchResult {
+  successfulCount: number;
+  failureCount: number;
+  logs: Array<{
+    to: string;
+    status: 'sent' | 'failed';
+    providerRef: string | null;
+    error?: string;
+  }>;
 }
 
 export class TextLkClient {
-  private apiKey: string;
-  private apiEndpoint: string;
+  private endpoint: string;
+  private token: string;
   private senderId: string;
 
-  constructor(config?: Partial<TextLkConfig>) {
-    this.apiKey = config?.apiKey || process.env.TEXT_LK_API_KEY || 'TEXT_LK_DEMO_KEY';
-    this.apiEndpoint = config?.apiEndpoint || process.env.TEXT_LK_ENDPOINT || 'https://app.text.lk/api/v3/sms/send';
-    this.senderId = config?.senderId || process.env.TEXT_LK_SENDER_ID || 'CampusAlert';
+  constructor() {
+    this.endpoint = config.textLk.apiEndpoint;
+    this.token = config.textLk.apiToken;
+    this.senderId = config.textLk.senderId;
   }
 
   /**
-   * Format phone number to Text.lk required format (e.g., 947XXXXXXXX)
+   * Cleans phone number to digits only with country code, no "+"
+   * e.g. +94771234567 -> 94771234567
    */
-  private formatPhoneNumber(phone: string): string {
-    const cleaned = phone.replace(/[^0-9]/g, '');
-    if (cleaned.startsWith('0') && cleaned.length === 10) {
-      return '94' + cleaned.substring(1);
+  public sanitizePhone(phone: string): string {
+    let digits = phone.replace(/[^0-9]/g, '');
+    if (digits.startsWith('0') && digits.length === 10) {
+      digits = '94' + digits.substring(1);
     }
-    if (cleaned.startsWith('94')) {
-      return cleaned;
-    }
-    return cleaned;
+    return digits;
   }
 
   /**
-   * Sends a critical emergency SMS to a single recipient
+   * Adapter conforming to Section 6.5:
+   * Batches up to 100 comma-separated numbers per HTTP request.
    */
-  async sendSms(to: string, message: string): Promise<SmsSendResult> {
-    const formattedRecipient = this.formatPhoneNumber(to);
-    try {
+  async sendSms(
+    recipients: string[],
+    message: string,
+    options: SendSmsOptions = {}
+  ): Promise<SmsBatchResult> {
+    const isFlash = options.flash ?? false;
+    const alertId = options.alertId || 'alert_direct';
+    const db = admin.firestore();
+
+    const sanitizedRecipients = Array.from(
+      new Set(recipients.map((r) => this.sanitizePhone(r)).filter((r) => r.length >= 9))
+    );
+
+    const result: SmsBatchResult = {
+      successfulCount: 0,
+      failureCount: 0,
+      logs: [],
+    };
+
+    if (sanitizedRecipients.length === 0) {
+      return result;
+    }
+
+    // Limit to SMS_MAX_PER_ALERT
+    const limitedRecipients = sanitizedRecipients.slice(0, config.textLk.maxPerAlert);
+
+    // Text.lk batch size up to 100 per call
+    const batchSize = 100;
+    for (let i = 0; i < limitedRecipients.length; i += batchSize) {
+      const batch = limitedRecipients.slice(i, i + batchSize);
+      const recipientString = batch.join(',');
+
       const payload = {
-        recipient: formattedRecipient,
+        recipient: recipientString,
         sender_id: this.senderId,
-        message: message,
+        type: 'plain',
+        message: message.substring(0, 160), // Hard cap at 160 chars per contract
+        is_flash: isFlash,
       };
 
-      const response = await axios.post(this.apiEndpoint, payload, {
-        headers: {
-          Authorization: `Bearer ${this.apiKey}`,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        timeout: 10000,
-      });
+      try {
+        const response = await axios.post(this.endpoint, payload, {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+            'Content-Type': 'application/json',
+            Accept: 'application/json',
+          },
+          timeout: 12000,
+        });
 
-      return {
-        success: response.status === 200,
-        recipient: formattedRecipient,
-        response: response.data,
-      };
-    } catch (error: any) {
-      console.error(`Failed to send SMS to ${formattedRecipient}:`, error?.response?.data || error.message);
-      return {
-        success: false,
-        recipient: formattedRecipient,
-        error: error?.response?.data?.message || error.message,
-      };
+        // Verification per Section 6.5: Text.lk returns status: "success" and data.uid
+        const responseData = response.data;
+        const isSuccess = responseData?.status === 'success' && !!responseData?.data?.uid;
+        const providerRef = responseData?.data?.uid || null;
+
+        const writeBatch = db.batch();
+        for (const recipient of batch) {
+          const logRef = db.collection('smsLogs').doc();
+          writeBatch.set(logRef, {
+            id: logRef.id,
+            alertId,
+            to: '+' + recipient,
+            provider: 'textlk',
+            status: isSuccess ? 'sent' : 'failed',
+            providerRef,
+            at: new Date().toISOString(),
+          });
+
+          result.logs.push({
+            to: '+' + recipient,
+            status: isSuccess ? 'sent' : 'failed',
+            providerRef,
+          });
+        }
+        await writeBatch.commit();
+
+        if (isSuccess) {
+          result.successfulCount += batch.length;
+        } else {
+          result.failureCount += batch.length;
+        }
+      } catch (err: any) {
+        console.error('Text.lk batch dispatch error:', err?.response?.data || err.message);
+        result.failureCount += batch.length;
+
+        const writeBatch = db.batch();
+        for (const recipient of batch) {
+          const logRef = db.collection('smsLogs').doc();
+          writeBatch.set(logRef, {
+            id: logRef.id,
+            alertId,
+            to: '+' + recipient,
+            provider: 'textlk',
+            status: 'failed',
+            providerRef: null,
+            error: err?.response?.data?.message || err.message,
+            at: new Date().toISOString(),
+          });
+
+          result.logs.push({
+            to: '+' + recipient,
+            status: 'failed',
+            providerRef: null,
+            error: err.message,
+          });
+        }
+        await writeBatch.commit();
+      }
     }
-  }
 
-  /**
-   * Broadcast emergency SMS to a list of phone numbers (BR15)
-   */
-  async broadcastEmergency(recipients: string[], message: string): Promise<SmsSendResult[]> {
-    const results: SmsSendResult[] = [];
-    const urgentPrefix = '[UCL EMERGENCY ALERT] ';
-    const fullMessage = message.startsWith('[UCL') ? message : `${urgentPrefix}${message}`;
-
-    // Process in batches of 20 to respect API rate limits
-    const batchSize = 20;
-    for (let i = 0; i < recipients.length; i += batchSize) {
-      const batch = recipients.slice(i, i + batchSize);
-      const batchPromises = batch.map((phone) => this.sendSms(phone, fullMessage));
-      const batchResults = await Promise.all(batchPromises);
-      results.push(...batchResults);
-    }
-
-    return results;
+    return result;
   }
 }
 

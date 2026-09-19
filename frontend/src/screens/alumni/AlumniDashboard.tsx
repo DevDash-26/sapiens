@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   welcomeBanner: {
-    backgroundColor: '#312e81',
+    backgroundColor: '#9e1217',
     padding: 20,
     borderRadius: 12,
     marginBottom: 16,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   },
   welcomeBody: {
     fontSize: 14,
-    color: '#c7d2fe',
+    color: '#fee2e2',
     lineHeight: 20,
   },
   card: {
@@ -110,13 +110,13 @@ const styles = StyleSheet.create({
   },
   btnOutline: {
     borderWidth: 1,
-    borderColor: '#4338ca',
+    borderColor: '#e12229',
     borderRadius: 6,
     paddingVertical: 10,
     alignItems: 'center',
   },
   btnOutlineText: {
-    color: '#4338ca',
+    color: '#e12229',
     fontWeight: '600',
     fontSize: 14,
   },
