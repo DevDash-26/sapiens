@@ -189,12 +189,12 @@ cd backend/functions && npm run build
 
 ## 8. Current Implementation Status & Memory Log
 
-| Phase | Milestone | Status | Notes |
+| Phase | Milestone | Status | Commit / Notes |
 | :--- | :--- | :--- | :--- |
-| **P1** | Monorepo Directory & Configs | ✅ Completed | Root `package.json`, Metro config, Netlify config, .gitignore |
-| **P2** | Expo SDK 57 Initiation | ✅ Completed | Installed `expo@57.0.26`, verified web export with 0 errors |
-| **P3** | 8-Tier RBAC Architecture | ✅ Completed | `auth.ts`, `AuthRBACContext.tsx`, `customClaims.ts`, `firestore.rules` |
-| **P4** | Text.lk SMS Client & Trigger | ✅ Completed | `textLkClient.ts` + `onEmergencyCreated.ts` Firestore trigger |
-| **P5** | Data Transfer (NFR5) | ✅ Completed | `dataTransfer.ts` Cloud Function + `DataTransfer.tsx` UI |
-| **P6** | Role-Segmented UI Views | ✅ Completed | Admin, Staff, Student, Alumni dashboards created with interactive switcher |
-| **P7** | OpenAI Campus Chatbot (BR33) | 🔄 Next Step | Connect OpenAI client and interactive conversational UI |
+| **Phase 1** | Foundations, Express API, Contract Schemas & Seeder | ✅ Completed | Commit `48ec73c` (`/health`, `/meta`, `/me`, `seed.ts`, Firestore rules & indexes) |
+| **Phase 2** | Targeted Content Engine, Unified Feed & Calendar | ✅ Completed | Commit `3f44502` (`/feed`, `/contents`, `/calendar`, schedulers & publication triggers) |
+| **Phase 3** | Critical Safety Alerts & SMS Gateway (Text.lk) | 🔄 Next Up | `alerts.ts`, `textLkClient.ts`, `onEmergencyCreated.ts` (BR13–BR15) |
+| **Phase 4** | Room Bookings & Campus Inquiries / Requests | ⏳ Queued | `rooms.ts`, `requests.ts`, `onRoomRequestUpdated.ts` (BR6–BR12) |
+| **Phase 5** | Societies, Lost & Found, Staff Directory & FAQs | ⏳ Queued | `societies.ts`, `events.ts`, `faqs.ts`, `staff.ts`, `search.ts` (BR3, BR4, BR16–BR24) |
+| **Phase 6** | AI Campus Assistant (OpenAI) & Admin Data Transfer | ⏳ Queued | `ai.ts`, `dataTransfer.ts`, `admin.ts`, CSV/JSON exports (BR25–BR33, NFR5) |
+
