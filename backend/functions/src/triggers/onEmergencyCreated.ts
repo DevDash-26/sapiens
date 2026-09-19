@@ -7,8 +7,9 @@ import { textLk } from '../sms/textLkClient';
  * When an Admin creates a critical alert, this function queries registered user phone numbers
  * and broadcasts an urgent SMS via Text.lk API.
  */
-export const onEmergencyCreated = functions.firestore
-  .document('emergencies/{emergencyId}')
+export const onEmergencyCreated = functions
+  .region('asia-south1')
+  .firestore.document('emergencies/{emergencyId}')
   .onCreate(async (snap: any, context: any) => {
     const emergencyData = snap.data();
     const emergencyId = context.params.emergencyId;
@@ -28,13 +29,13 @@ export const onEmergencyCreated = functions.firestore
       const usersSnapshot = await admin
         .firestore()
         .collection('users')
-        .where('phoneNumber', '!=', null)
+        .where('phone', '!=', null)
         .limit(500)
         .get();
 
       const phoneNumbers: string[] = [];
       usersSnapshot.forEach((doc: any) => {
-        const phone = doc.data().phoneNumber;
+        const phone = doc.data().phone || doc.data().phoneNumber;
         if (phone && typeof phone === 'string' && phone.trim().length > 0) {
           phoneNumbers.push(phone.trim());
         }
@@ -54,19 +55,17 @@ export const onEmergencyCreated = functions.firestore
       }
 
       // Broadcast via Text.lk Client
-      const sendResults = await textLk.broadcastEmergency(phoneNumbers, smsContent);
-      const successfulCount = sendResults.filter((r) => r.success).length;
-      const failureCount = sendResults.length - successfulCount;
+      const result = await textLk.sendSms(phoneNumbers, smsContent, { alertId: emergencyId });
 
-      console.log(`Emergency SMS sent. Success: ${successfulCount}, Failures: ${failureCount}`);
+      console.log(`Emergency SMS sent. Success: ${result.successfulCount}, Failures: ${result.failureCount}`);
 
       // Update emergency record with dispatch statistics
       await snap.ref.update({
         smsDispatched: true,
         dispatchedAt: admin.firestore.FieldValue.serverTimestamp(),
         totalRecipients: phoneNumbers.length,
-        successfulCount,
-        failureCount,
+        successfulCount: result.successfulCount,
+        failureCount: result.failureCount,
       });
     } catch (err: any) {
       console.error(`Error in onEmergencyCreated trigger for ${emergencyId}:`, err);

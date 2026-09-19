@@ -7,118 +7,80 @@ import { FAQ } from '../types/contract';
 const router = Router();
 router.use(requireAuth);
 
-// GET /faqs - list FAQs (§5.9)
+// GET /faqs - list or search FAQs (§5.11)
 router.get('/', async (req: AuthenticatedRequest, res: Response) => {
   const { category, q } = req.query as Record<string, string>;
   const db = admin.firestore();
 
-  try {
-    let query: admin.firestore.Query = db.collection('faqs').where('status', '==', 'published');
-    if (category) query = query.where('category', '==', category);
+  let query: admin.firestore.Query = db.collection('faqs').where('status', '==', 'published');
+  if (category) query = query.where('category', '==', category);
 
-    const snap = await query.orderBy('order', 'asc').get();
-    let faqs = snap.docs.map((d) => d.data() as FAQ);
+  const snap = await query.get();
+  let faqs = snap.docs.map((d) => d.data() as FAQ);
 
-    if (q) {
-      const qLower = q.toLowerCase();
-      faqs = faqs.filter(
-        (f) =>
-          f.question.toLowerCase().includes(qLower) ||
-          f.answer.toLowerCase().includes(qLower) ||
-          f.keywords.some((k) => k.toLowerCase().includes(qLower))
-      );
-    }
-
-    return sendSuccess(res, faqs);
-  } catch (err: any) {
-    console.error('Error fetching FAQs:', err);
-    return sendError(res, 'INTERNAL', 'Failed to fetch FAQs.', 500);
+  if (q) {
+    const qLower = q.toLowerCase();
+    faqs = faqs.filter(
+      (f) =>
+        f.question.toLowerCase().includes(qLower) ||
+        f.answer.toLowerCase().includes(qLower) ||
+        (f.keywords || []).some((k) => k.toLowerCase().includes(qLower))
+    );
+  } else {
+    faqs.sort((a, b) => a.order - b.order);
   }
+
+  sendSuccess(res, faqs);
 });
 
-// POST /faqs - create FAQ (§5.9)
+// POST /faqs/:id/feedback - helpful or unhelpful feedback (§5.11)
+router.post('/:id/feedback', async (req: AuthenticatedRequest, res: Response) => {
+  const id = req.params.id;
+  const { helpful } = req.body as { helpful: boolean };
+  const db = admin.firestore();
+
+  const ref = db.collection('faqs').doc(id);
+  const doc = await ref.get();
+  if (!doc.exists) {
+    sendError(res, 'NOT_FOUND', 'FAQ not found.', 404);
+    return;
+  }
+
+  const updateField = helpful ? 'helpfulCount' : 'unhelpfulCount';
+  await ref.update({
+    [updateField]: admin.firestore.FieldValue.increment(1),
+  });
+
+  const updated = (await ref.get()).data() as FAQ;
+  sendSuccess(res, { helpfulCount: updated.helpfulCount, unhelpfulCount: updated.unhelpfulCount });
+});
+
+// POST /faqs - create FAQ (manager+, §5.11)
 router.post('/', requireRole(['super_admin', 'admin', 'manager']), async (req: AuthenticatedRequest, res: Response) => {
   const { question, answer, category, keywords = [] } = req.body;
-
   if (!question || !answer || !category) {
-    return sendError(res, 'VALIDATION_ERROR', 'question, answer, and category are required.', 400);
+    sendError(res, 'VALIDATION_ERROR', 'question, answer, and category are required.', 400);
+    return;
   }
 
   const db = admin.firestore();
-  const faqId = `faq_${Date.now().toString(36)}`;
-  const now = new Date().toISOString();
-
-  const newFAQ: FAQ = {
-    id: faqId,
+  const id = 'faq_' + Math.random().toString(36).substr(2, 9);
+  const newFaq: FAQ = {
+    id,
     question,
     answer,
     category,
     keywords,
-    order: 99,
+    order: 1,
     status: 'published',
     helpfulCount: 0,
     unhelpfulCount: 0,
-    source: { department: 'Academic Affairs', verified: true },
-    updatedAt: now,
+    source: { department: req.user?.department || 'Academic Affairs', verified: true },
+    updatedAt: new Date().toISOString(),
   };
 
-  try {
-    await db.collection('faqs').doc(faqId).set(newFAQ);
-    return sendSuccess(res, newFAQ, 201);
-  } catch (err: any) {
-    console.error('Error creating FAQ:', err);
-    return sendError(res, 'INTERNAL', 'Failed to create FAQ.', 500);
-  }
-});
-
-// PATCH /faqs/:id - edit FAQ (§5.9)
-router.patch('/:id', requireRole(['super_admin', 'admin', 'manager']), async (req: AuthenticatedRequest, res: Response) => {
-  const faqId = req.params.id;
-  const updates = req.body;
-  const db = admin.firestore();
-
-  try {
-    const faqRef = db.collection('faqs').doc(faqId);
-    const now = new Date().toISOString();
-    await faqRef.update({ ...updates, updatedAt: now });
-    return sendSuccess(res, { id: faqId, ...updates, updatedAt: now });
-  } catch (err: any) {
-    console.error('Error updating FAQ:', err);
-    return sendError(res, 'INTERNAL', 'Failed to update FAQ.', 500);
-  }
-});
-
-// DELETE /faqs/:id - delete FAQ (§5.9)
-router.delete('/:id', requireRole(['super_admin', 'admin', 'manager']), async (req: AuthenticatedRequest, res: Response) => {
-  const faqId = req.params.id;
-  const db = admin.firestore();
-
-  try {
-    await db.collection('faqs').doc(faqId).delete();
-    return sendSuccess(res, { id: faqId, deleted: true });
-  } catch (err: any) {
-    console.error('Error deleting FAQ:', err);
-    return sendError(res, 'INTERNAL', 'Failed to delete FAQ.', 500);
-  }
-});
-
-// POST /faqs/:id/vote - feedback vote (§5.9)
-router.post('/:id/vote', async (req: AuthenticatedRequest, res: Response) => {
-  const faqId = req.params.id;
-  const { helpful } = req.body;
-
-  const db = admin.firestore();
-  try {
-    const faqRef = db.collection('faqs').doc(faqId);
-    const field = helpful ? 'helpfulCount' : 'unhelpfulCount';
-    await faqRef.update({
-      [field]: admin.firestore.FieldValue.increment(1),
-    });
-    return sendSuccess(res, { id: faqId, voted: true });
-  } catch (err: any) {
-    console.error('Error voting FAQ:', err);
-    return sendError(res, 'INTERNAL', 'Failed to vote FAQ.', 500);
-  }
+  await db.collection('faqs').doc(id).set(newFaq);
+  sendSuccess(res, newFaq, 201);
 });
 
 export default router;

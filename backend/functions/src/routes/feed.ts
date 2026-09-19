@@ -119,14 +119,16 @@ router.get('/', async (req: AuthenticatedRequest, res: Response) => {
   const bookingsSnap = await db
     .collection('bookings')
     .where('uid', '==', user.id)
-    .where('status', '==', 'confirmed')
-    .where('startsAt', '>=', nowUtc)
-    .limit(5)
+    .limit(20)
     .get();
+
+  const upcomingBookingsCount = bookingsSnap.docs
+    .map((d) => d.data())
+    .filter((b: any) => b.status === 'confirmed' && b.startsAt >= nowUtc).length;
 
   const me = {
     unreadNotifications: unreadNotifsSnap.size,
-    upcomingBookings: bookingsSnap.size,
+    upcomingBookings: upcomingBookingsCount,
     societyRequestsPending: 0,
   };
 

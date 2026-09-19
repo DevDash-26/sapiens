@@ -159,8 +159,14 @@ We enforce an **8-tier RBAC system** using Firebase Custom Claims (`request.auth
    - **DO NOT** seed, inject, or write initial database mock records directly from frontend components, hooks, or client-side startup scripts.
    - All dataset population, test data ingestion, and batch migrations must strictly be handled through the backend (e.g., Firebase Cloud Functions, the NFR5 Data Transfer API, or backend administrative seed scripts).
    - The frontend remains strictly a client consumer and UI interface.
-5. **Git Commit Cadence:**
-   - Commit and push working increments to GitHub every 30–60 minutes.
+5. **No AI Git Commits (Strict Rule - User Commits Exclusively):**
+   - **DO NOT** execute `git commit` directly under any circumstances.
+   - The user will ALWAYS commit all code changes manually.
+   - Antigravity / Gemini will write, edit, and test the code, verify that builds succeed, and propose a concise, conventional commit message, but the actual `git commit` command must always be run by the USER.
+6. **Issue Lifecycle & User Closure Guidance:**
+   - After completing code for any phase, feature, or bug, inform the user which GitHub issue or sub-issue was addressed.
+   - Provide the user with the corresponding `gh issue close <id>` command so the user can close the issues upon review and commit.
+
 
 ---
 
