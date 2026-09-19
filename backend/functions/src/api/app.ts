@@ -28,6 +28,10 @@ import searchRoutes from '../routes/search';
 import faqsRoutes from '../routes/faqs';
 import staffRoutes from '../routes/staff';
 
+// Phase 6 Route handlers — Admin User Management & Bulk Data Transfer (NFR5)
+import adminRoutes from '../routes/admin';
+import dataTransferRoutes from '../routes/dataTransfer';
+
 export function createExpressApp(): Express {
   const app = express();
 
@@ -62,6 +66,11 @@ export function createExpressApp(): Express {
   v1.use('/search', searchRoutes);
   v1.use('/faqs', faqsRoutes);
   v1.use('/staff', staffRoutes);
+
+  // Phase 6: Admin User Management, Bulk Import/Export (NFR5)
+  v1.use('/admin', adminRoutes);
+  v1.use('/export', dataTransferRoutes);
+  v1.use('/import', dataTransferRoutes);
 
   app.use('/api/v1', v1);
   app.use('/v1', v1);
