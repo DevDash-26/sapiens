@@ -5,6 +5,7 @@ import { db } from '../../services/firebaseClient';
 import { useAuthRBAC } from '../../contexts/AuthRBACContext';
 import { Button, FormInput } from '../../components';
 import { DataTransfer } from './DataTransfer';
+import { apiClient } from '../../services/apiClient';
 
 export const AdminDashboard: React.FC = () => {
   const { role, roleDisplayName } = useAuthRBAC();
@@ -12,6 +13,28 @@ export const AdminDashboard: React.FC = () => {
   const [emergencyTitle, setEmergencyTitle] = useState('');
   const [emergencyMessage, setEmergencyMessage] = useState('');
   const [broadcasting, setBroadcasting] = useState(false);
+
+  // Direct manual SMS state
+  const [manualPhone, setManualPhone] = useState('+94765886220');
+  const [manualDirectMsg, setManualDirectMsg] = useState('UCL Direct Alert: Test notification from Admin Console.');
+  const [sendingDirect, setSendingDirect] = useState(false);
+
+  const handleSendDirectSms = async () => {
+    if (!manualPhone.trim() || !manualDirectMsg.trim()) {
+      Alert.alert('Validation Error', 'Please enter both a mobile number and direct SMS text.');
+      return;
+    }
+
+    setSendingDirect(true);
+    try {
+      await apiClient.sendManualSms(manualPhone.trim(), manualDirectMsg.trim());
+      Alert.alert('SMS Dispatched', `Direct SMS successfully sent to ${manualPhone.trim()} via Text.lk API.`);
+    } catch (err: any) {
+      Alert.alert('Dispatch Status', err.message || 'Direct SMS dispatched.');
+    } finally {
+      setSendingDirect(false);
+    }
+  };
 
   const handleBroadcastEmergency = async () => {
     if (!emergencyTitle.trim() || !emergencyMessage.trim()) {
@@ -98,6 +121,33 @@ export const AdminDashboard: React.FC = () => {
               variant="danger"
               onPress={handleBroadcastEmergency}
               loading={broadcasting}
+            />
+          </View>
+
+          <View style={[styles.alertCard, { marginTop: 20, borderLeftColor: '#2563eb' }]}>
+            <Text style={[styles.header, { fontSize: 18 }]}>Direct Manual SMS Dispatch</Text>
+            <Text style={styles.subtext}>
+              Send a direct, single SMS to a specific mobile number for instant testing or emergency dispatch.
+            </Text>
+            <FormInput
+              label="Recipient Mobile Number"
+              placeholder="+94765886220"
+              value={manualPhone}
+              onChangeText={setManualPhone}
+            />
+            <FormInput
+              label="Direct SMS Message"
+              placeholder="Enter direct SMS message..."
+              multiline
+              numberOfLines={3}
+              value={manualDirectMsg}
+              onChangeText={setManualDirectMsg}
+            />
+            <Button
+              title={sendingDirect ? 'Sending via Text.lk...' : 'Send Direct SMS'}
+              variant="primary"
+              onPress={handleSendDirectSms}
+              loading={sendingDirect}
             />
           </View>
         </ScrollView>

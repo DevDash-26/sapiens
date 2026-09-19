@@ -3,9 +3,48 @@ import * as admin from 'firebase-admin';
 import { AuthenticatedRequest, requireAuth, requireRole } from '../middleware/auth';
 import { sendSuccess, sendError } from '../utils/envelope';
 import { User, Role, AuditLog } from '../types/contract';
+import { textLk } from '../sms/textLkClient';
 
 const router = Router();
 router.use(requireAuth);
+
+// POST /admin/sms/send - manual direct SMS dispatch (§5.13, BR15)
+router.post('/sms/send', requireRole(['super_admin', 'admin']), async (req: AuthenticatedRequest, res: Response) => {
+  const caller = req.user!;
+  const { phone, message } = req.body;
+
+  if (!phone || !message) {
+    sendError(res, 'VALIDATION_ERROR', 'phone and message are required.', 400);
+    return;
+  }
+
+  try {
+    const result = await textLk.sendSms([phone], message);
+    const nowUtc = new Date().toISOString();
+
+    await admin.firestore().collection('auditLogs').add({
+      id: 'aud_' + Math.random().toString(36).substr(2, 9),
+      actorUid: caller.id,
+      actorRole: caller.role,
+      action: 'sms.manual_send',
+      entity: 'sms',
+      entityId: phone,
+      summary: `Manual SMS to ${phone} (${result.successfulCount} sent, ${result.failureCount} failed)`,
+      ip: req.ip || null,
+      at: nowUtc,
+    });
+
+    sendSuccess(res, {
+      phone,
+      message,
+      successfulCount: result.successfulCount,
+      failureCount: result.failureCount,
+      logs: result.logs,
+    });
+  } catch (err: any) {
+    sendError(res, 'INTERNAL', err.message || 'Failed to dispatch manual SMS.', 500);
+  }
+});
 
 // GET /admin/users - list users with role and status filters (§5.13)
 router.get('/users', requireRole(['super_admin', 'admin']), async (req: AuthenticatedRequest, res: Response) => {

@@ -283,6 +283,19 @@ export const apiClient = {
     });
   },
 
+  async sendManualSms(phone: string, message: string): Promise<{
+    phone: string;
+    message: string;
+    successfulCount: number;
+    failureCount: number;
+    logs: any[];
+  }> {
+    return apiFetch<any>('/admin/sms/send', {
+      method: 'POST',
+      body: JSON.stringify({ phone, message }),
+    });
+  },
+
   // Requests & Claims
   async getRequests(params?: { type?: string; status?: string; mine?: boolean }): Promise<Request[]> {
     const query = new URLSearchParams();
