@@ -7,6 +7,11 @@ import { sendError } from '../utils/envelope';
 import metaRoutes from '../routes/meta';
 import meRoutes from '../routes/me';
 
+// Phase 2 Route handlers
+import feedRoutes from '../routes/feed';
+import contentsRoutes from '../routes/contents';
+import calendarRoutes from '../routes/calendar';
+
 export function createExpressApp(): Express {
   const app = express();
 
@@ -23,6 +28,9 @@ export function createExpressApp(): Express {
   const v1 = express.Router();
   v1.use('/', metaRoutes);
   v1.use('/me', meRoutes);
+  v1.use('/feed', feedRoutes);
+  v1.use('/contents', contentsRoutes);
+  v1.use('/calendar', calendarRoutes);
 
   app.use('/api/v1', v1);
   app.use('/', v1);

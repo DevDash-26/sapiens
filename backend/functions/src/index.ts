@@ -17,3 +17,8 @@ export const api = functions
     memory: '512MB',
   })
   .https.onRequest(expressApp);
+
+// Phase 2 Schedulers and Triggers (§6.2, §6.3, §7.3)
+export { publishScheduled, expireContent } from './schedulers/contentLifecycle';
+export { onContentPublished } from './triggers/onContentPublished';
+
