@@ -456,6 +456,9 @@ const MainAppContainer: React.FC = () => {
           />
         )}
 
+        {/* Main Screen Body */}
+        <View style={styles.screenContent}>{renderActiveScreen()}</View>
+
         {/* Floating AI Campus Assistant Hovering Button */}
         {!isAuthScreen && currentScreen !== 'ai_assistant' && (
           <TouchableOpacity
@@ -496,14 +499,13 @@ export default function App() {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: '#0b0f19',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: Platform.OS === 'web' ? '#0b0f19' : colors.neutral.bg,
   },
   appFrame: {
     flex: 1,
     width: '100%',
     maxWidth: 480, // Constrained mobile aspect ratio per 01-DESIGN-SYSTEM.md
+    alignSelf: 'center',
     backgroundColor: colors.neutral.bg,
     overflow: 'hidden',
     ...Platform.select({

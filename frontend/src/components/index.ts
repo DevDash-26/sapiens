@@ -12,3 +12,4 @@ export * from './common/Header';
 export * from './common/BottomTabBar';
 export * from './common/Tabs';
 export * from './common/Modal';
+export * from './common/IconSymbol';

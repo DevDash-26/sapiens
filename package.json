@@ -26,5 +26,8 @@
     "monorepo"
   ],
   "author": "Team Sapiens",
-  "license": "UNLICENSED"
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@expo/vector-icons": "^15.1.1"
+  }
 }
