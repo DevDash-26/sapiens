@@ -14,6 +14,20 @@ import contentsRoutes from '../routes/contents';
 import calendarRoutes from '../routes/calendar';
 import notificationsRoutes from '../routes/notifications';
 
+// Phase 3 Route handlers (BR13–BR15)
+import alertsRoutes from '../routes/alerts';
+
+// Phase 4 Route handlers (BR6–BR12)
+import roomsRoutes from '../routes/rooms';
+import requestsRoutes from '../routes/requests';
+
+// Phase 5 Route handlers (BR3, BR4, BR16–BR24)
+import societiesRoutes from '../routes/societies';
+import eventsRoutes from '../routes/events';
+import searchRoutes from '../routes/search';
+import faqsRoutes from '../routes/faqs';
+import staffRoutes from '../routes/staff';
+
 export function createExpressApp(): Express {
   const app = express();
 
@@ -21,7 +35,6 @@ export function createExpressApp(): Express {
   app.use(cors({ origin: true }));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true }));
-  app.use(authenticateToken);
 
   // Health and Meta directly on root
   app.use('/health', metaRoutes);
@@ -35,6 +48,20 @@ export function createExpressApp(): Express {
   v1.use('/contents', contentsRoutes);
   v1.use('/calendar', calendarRoutes);
   v1.use('/notifications', notificationsRoutes);
+
+  // Phase 3: Critical Safety Alerts & Text.lk SMS
+  v1.use('/alerts', alertsRoutes);
+
+  // Phase 4: Room Bookings & Campus Inquiries / Service Requests
+  v1.use('/rooms', roomsRoutes);
+  v1.use('/requests', requestsRoutes);
+
+  // Phase 5: Societies, Event RSVPs, Global Search, FAQs & Staff Directory
+  v1.use('/societies', societiesRoutes);
+  v1.use('/events', eventsRoutes);
+  v1.use('/search', searchRoutes);
+  v1.use('/faqs', faqsRoutes);
+  v1.use('/staff', staffRoutes);
 
   app.use('/api/v1', v1);
   app.use('/v1', v1);

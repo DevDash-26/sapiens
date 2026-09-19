@@ -22,6 +22,10 @@ export const api = functions
 // Phase 2 Firestore Triggers (Event-driven, 100% free within 2M calls/mo)
 export { onContentPublished } from './triggers/onContentPublished';
 
+// Phase 3 Safety Alerts & Text.lk SMS Triggers (BR13–BR15)
+export { onAlertConfirmed } from './triggers/onAlertConfirmed';
+export { onEmergencyCreated } from './triggers/onEmergencyCreated';
+
 // Note: Background cron schedulers (publishScheduled, expireContent) are disabled for cloud 
 // deployment to avoid Cloud Scheduler charges. They can be re-enabled or run locally in emulators.
 // export { publishScheduled, expireContent } from './schedulers/contentLifecycle';

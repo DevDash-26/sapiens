@@ -68,26 +68,62 @@ router.post('/login', async (req: AuthenticatedRequest, res: Response) => {
     }
   }
 
-  // Mode 2: Authorization: Bearer <idToken> or Demo Mode header
-  if (req.user) {
-    if (req.user.status === 'suspended') {
-      sendError(res, 'FORBIDDEN', 'This account has been suspended.', 403);
+  // Mode 2: Authorization: Bearer <idToken> in header (Session verification)
+  if (authHeader && authHeader.startsWith('Bearer ')) {
+    const idToken = authHeader.split('Bearer ')[1].trim();
+    try {
+      const decodedToken = await admin.auth().verifyIdToken(idToken);
+      const user = await getFirestoreUser(decodedToken.uid);
+
+      if (!user) {
+        sendError(res, 'FORBIDDEN', 'Firebase Auth UID exists but no Firestore /users document found.', 403);
+        return;
+      }
+
+      if (user.status === 'suspended') {
+        sendError(res, 'FORBIDDEN', 'Account has been deactivated by an admin.', 403);
+        return;
+      }
+
+      await db.collection('users').doc(decodedToken.uid).update({ lastLoginAt: nowIso });
+
+      sendSuccess(res, {
+        user: {
+          ...user,
+          lastLoginAt: nowIso,
+          fcmTokens: undefined,
+        },
+      });
+      return;
+    } catch (err: any) {
+      sendError(res, 'UNAUTHENTICATED', err.message || 'Firebase ID Token is expired, malformed, or invalid.', 401);
       return;
     }
+  }
 
-    await db.collection('users').doc(req.user.id).update({ lastLoginAt: nowIso });
-    sendSuccess(res, {
-      user: {
-        ...req.user,
-        lastLoginAt: nowIso,
-        fcmTokens: undefined,
-      },
-    });
-    return;
+  // Mode 3: Demo Mode header bypass
+  if (config.demoMode && req.headers['x-demo-uid']) {
+    const demoUid = req.headers['x-demo-uid'] as string;
+    const user = await getFirestoreUser(demoUid);
+    if (user) {
+      if (user.status === 'suspended') {
+        sendError(res, 'FORBIDDEN', 'Account has been deactivated by an admin.', 403);
+        return;
+      }
+      await db.collection('users').doc(user.id).update({ lastLoginAt: nowIso });
+      sendSuccess(res, {
+        user: {
+          ...user,
+          lastLoginAt: nowIso,
+          fcmTokens: undefined,
+        },
+      });
+      return;
+    }
   }
 
   // Missing credentials or token
-  sendError(res, 'UNAUTHENTICATED', "Authentication required. Provide 'email' and 'password' in JSON body, or 'Authorization: Bearer <token>'.", 401);
+  sendError(res, 'UNAUTHENTICATED', "Authorization header missing. Expected 'Bearer <token>'.", 401);
 });
 
 /**
