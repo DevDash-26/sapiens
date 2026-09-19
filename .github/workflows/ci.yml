@@ -1,0 +1,68 @@
+name: CI & Lint Verification
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - 'feat/**'
+      - 'fix/**'
+      - 'chore/**'
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  lint-and-typecheck:
+    name: Lint & Static Typecheck
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Monorepo Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Typecheck Frontend (Expo SDK 57 / React 19)
+        run: npm run typecheck:frontend
+
+      - name: Typecheck & Build Backend (Node.js 20 Firebase Cloud Functions)
+        run: npm run build:backend
+
+  web-build:
+    name: Frontend Web Export Build Verification
+    runs-on: ubuntu-latest
+    needs: lint-and-typecheck
+    strategy:
+      matrix:
+        node-version: [20.x]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install Monorepo Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Export Frontend Web Bundle (Netlify Web SPA Target)
+        run: npm run export:web
+        env:
+          EXPO_PUBLIC_API_URL: https://asia-south1-ucl-net-prod.cloudfunctions.net/api
+          EXPO_PUBLIC_FIREBASE_PROJECT_ID: ucl-net-prod

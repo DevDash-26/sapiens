@@ -1,99 +1,81 @@
-# Campus Management System Monorepo
+# Universal College Lanka (UCL) — Digital Campus Management System
 
-Comprehensive full-stack Campus Management System built with **Expo 57** (Mobile & Web) and **Google Firebase** (Cloud Functions, Firestore, Storage, Auth), designed to satisfy all functional and non-functional requirements (FRs & NFRs).
-
----
-
-## 🏛️ Architecture Overview
-
-```plaintext
-/campus-management-monorepo
-├── package.json                      # Root workspace config (workspaces: ["frontend", "backend/functions"])
-│
-├── /frontend                         # Expo 57 App (iOS, Android & Web via Netlify)
-│   ├── package.json                  # Expo, react-native-web, and frontend dependencies
-│   ├── app.json                      # Expo configuration (bundle identifier, splash screen)
-│   ├── metro.config.js               # *Crucial*: Configured to watch root monorepo paths
-│   ├── netlify.toml                  # Export & redirect rules for SPA web hosting on Netlify
-│   └── /src
-│       ├── /components               # Reusable UI (Button, Modal, FormInput, Header)
-│       ├── /contexts                 # Global React Contexts
-│       │   └── AuthRBACContext.tsx   # Enforces the 8 roles across routes and UI elements
-│       ├── /services                 # Firebase client SDK initialization
-│       │   └── firebaseClient.ts     # Client-side Firebase init
-│       ├── /screens                  # UI screens segmented by role access
-│       │   ├── /admin                # Views for Super Admin, Admin, Manager, Finance Staff
-│       │   │   ├── AdminDashboard.tsx# Control center & emergency broadcast UI
-│       │   │   └── DataTransfer.tsx  # Frontend UI for CSV/JSON Import & Export (NFR5)
-│       │   ├── /staff                # Views for Academic Staff, Society Reps
-│       │   │   └── StaffDashboard.tsx# Notice & Event publisher
-│       │   ├── /student              # Views for Student
-│       │   │   ├── StudentDashboard.tsx
-│       │   │   ├── EventsScreen.tsx
-│       │   │   ├── LostAndFoundScreen.tsx
-│       │   │   └── FAQScreen.tsx
-│       │   └── /alumni               # Views restricted to Past Alumni
-│       │       └── AlumniDashboard.tsx
-│       └── /utils
-│           └── rbacGuard.ts          # Helper to conditionally render UI based on the 8 roles
-│
-└── /backend                          # Google Firebase Backend Architecture
-    ├── firebase.json                 # Firebase project config (Functions, Firestore, Storage)
-    ├── .firebaserc                   # Firebase project alias
-    ├── firestore.rules               # Security rules mapping CRUD operations to the 8 roles
-    ├── storage.rules                 # Rules for file uploads (posters, logos, attachments)
-    └── /functions                    # Firebase Cloud Functions (Node.js 20)
-        ├── package.json              
-        └── /src
-            ├── index.ts              # Entrypoint exporting all cloud functions
-            ├── /auth
-            │   └── customClaims.ts   # Assigns Firebase Custom Claims (Super Admin -> Alumni)
-            ├── /api                  
-            │   └── dataTransfer.ts   # Handles heavy backend JSON/CSV data import and export
-            ├── /triggers             # Firestore document listeners
-            │   └── onEmergencyCreated.ts # Triggers Text.lk broadcast on critical alerts
-            └── /sms
-                └── textLkClient.ts   # Integration with Text.lk API for critical SMS alerts
-```
+> **An authoritative, multi-tenant digital hub and communication platform built for students, faculty, staff, and alumni at Universal College Lanka.**  
+> Developed for the **DevDash '26 Hackathon**.
 
 ---
 
-## 👥 8-Tier Role-Based Access Control (RBAC)
+## Executive Overview
 
-The system enforces 8 distinct roles across client UI guards and database security rules:
-
-1. **Super Admin**: Complete root access to system configurations, user claims, finance, and imports/exports.
-2. **Admin**: University administration, role assignments, emergency alerts, announcements.
-3. **Manager**: Department management, society approvals, emergency announcements.
-4. **Academic Staff**: Course notices, academic updates, student academic inquiries.
-5. **Finance Staff**: Invoicing, payment reconciliation, fee clearance, financial imports/exports.
-6. **Society Rep / Club President**: Club event organization, club memberships, notices.
-7. **Student**: Course access, event attendance, lost & found reporting, FAQs.
-8. **Past Alumni**: Alumni directory, mentorship network, homecoming & reunion updates.
+The **Universal College Lanka (UCL) Digital Campus Management System** consolidates fragmented university communication channels—such as disparate chat groups, physical bulletin boards, and one-off emails—into a unified, real-time institutional platform. Engineered as a cross-platform mobile and web application, it provides an authoritative single source of truth for academic notices, emergency safety broadcasts, campus facility reservations, student life, career opportunities, and conversational AI assistance.
 
 ---
 
-## ⚡ Core Features
+## Core Capabilities & System Modules
 
-- **Text.lk SMS Gateway Integration (BR15)**: Automatic Firestore Trigger on `emergencies` collection broadcasts instant SMS to students and staff.
-- **Bulk Data Migration (NFR5)**: High-speed batch import and export of student records, staff accounts, courses, and financial data in CSV and JSON formats.
-- **Expo 57 Monorepo Setup**: Metro bundler configured with `watchFolders` to resolve monorepo packages and shared dependencies.
-- **Multi-Platform Ready**: Deploys as Native Mobile (iOS/Android) and Single Page Web App (Netlify).
+- **Unified Institutional Noticeboard & Alerts**  
+  Categorized, priority-ranked campus notices and safety alerts with targeted cohort delivery based on faculty, academic year, and role.
+
+- **Automated & Manual Emergency SMS Broadcast**  
+  Instant SMS dispatch integrated directly with telecom gateways to deliver critical safety updates to students and staff mobile devices in real time.
+
+- **Conversational AI Campus Assistant**  
+  An interactive, natural-language campus companion grounded in official UCL regulations, facility locations, and academic FAQs, providing instant guidance and intelligent in-app routing.
+
+- **Campus Facilities, Services & Defect Triage**  
+  End-to-end management of campus operations, including real-time classroom availability, study room reservations, maintenance reporting, and lost & found claim verification.
+
+- **Student Engagement, Societies & Mentorship**  
+  Centralized club directory, event RSVP tracking, academic milestone recaps, and an alumni mentorship network connecting current cohorts with graduates.
+
+- **Administrative Console & Enterprise Bulk Data Transfer**  
+  Comprehensive staff administration suite supporting high-throughput CSV/JSON data ingestion and export across students, faculty, society rosters, and university asset catalogs.
 
 ---
 
-## 🚀 Quick Start Commands
+## Access Governance & 8-Tier RBAC
 
-```bash
-# Install root dependencies
-npm install
+The platform enforces least-privilege security through an **8-Tier Role-Based Access Control (RBAC)** architecture verified via cryptographic claims and strict database authorization policies:
 
-# Run Expo frontend (mobile & web)
-npm run start:frontend
+| Tier | Role | Scope & Privileges |
+| :---: | :--- | :--- |
+| **8** | **Super Admin** | Full system governance, security override, audit log inspection, and global data migration. |
+| **7** | **Admin Staff** | Campus-wide broadcast administration, account lifecycle management, and facility triage. |
+| **6** | **Manager** | Departmental operations oversight, approval queues, and institutional telemetry analysis. |
+| **5** | **Finance Staff** | Scholarship allocation, tuition verification, and financial reconciliation exports. |
+| **4** | **Academic Staff** | Faculty announcements, lecture scheduling, academic support resolution, and attendance. |
+| **3** | **Society Representative** | Student club profile administration, event hosting, and member registration review. |
+| **2** | **Student** | Timetable discovery, room reservations, incident reporting, lost & found claims, and AI assistant access. |
+| **1** | **Past Alumni** | Alumni directory participation, career mentorship programs, and reunion networking. |
 
-# Build & export for web
-npm run build:frontend
+---
 
-# Build backend functions
-npm run build:backend
-```
+## Technology Stack & Attributions
+
+### Frontend & Client Architecture
+- **Framework:** Expo SDK 57 (React Native for Web, iOS, and Android)
+- **Engine:** React 19 & React Native 0.86
+- **Web Runtime & Responsive Layout:** `react-native-web` with constrained mobile aspect framing
+- **Icons & Visual System:** `@expo/vector-icons` (Vectorized Ionicons, Material Design, FontAwesome)
+- **Hosting & CDN:** Netlify Global Edge Network
+
+### Backend, Database & Cloud Infrastructure
+- **Serverless Compute:** Firebase Cloud Functions (Node.js 20, TypeScript, Express API layer)
+- **Real-Time Database:** Google Cloud Firestore (Document database with role-guarded security rules)
+- **Authentication:** Firebase Authentication with 8-tier Custom Claims
+- **Object Storage:** Google Cloud Storage for digital assets, posters, and verification attachments
+
+### Third-Party APIs & External Integrations
+- **SMS Gateway:** [Text.lk](https://app.text.lk/) REST API (Bearer token authentication) for high-priority emergency notifications
+- **AI Engine:** Google Gemini API (`gemini-3.1-flash-lite`) for fast, natural-language student inquiry resolution and campus guidance
+
+### AI Assistance & Engineering Attributions
+In accordance with DevDash '26 guidelines and transparency standards, the following AI systems were utilized as engineering aids during development:
+- **Google Antigravity & Google Jules:** Agentic code generation, architecture planning, and workflow orchestration.
+- **Google Veo:** Presentation visual asset generation.
+
+---
+
+## License & Intellectual Property
+
+Developed by **Team Sapiens** for Universal College Lanka (UCL). All rights reserved.
