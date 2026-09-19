@@ -1,0 +1,33 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Expo
+.expo/
+web-build/
+dist/
+
+# Firebase
+.firebase/
+firebase-debug.log*
+firestore-debug.log*
+ui-debug.log*
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+serviceAccountKey.json
+*.pem
+
+# Native build folders
+frontend/android/
+frontend/ios/
+
+# Logs & scratch
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+*.log

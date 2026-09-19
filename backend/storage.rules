@@ -1,0 +1,48 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function getUserRole() {
+      return request.auth.token.role;
+    }
+
+    function isManagerOrAbove() {
+      return isAuthenticated() && (
+        getUserRole() == 'super_admin' ||
+        getUserRole() == 'admin' ||
+        getUserRole() == 'manager'
+      );
+    }
+
+    function isStaffOrSocietyRep() {
+      return isAuthenticated() && (
+        getUserRole() == 'academic_staff' ||
+        getUserRole() == 'society_rep'
+      );
+    }
+
+    // Public read for campus media, controlled uploads
+    match /posters/{fileName} {
+      allow read: if true;
+      allow write: if isManagerOrAbove() || isStaffOrSocietyRep();
+    }
+
+    match /society_logos/{fileName} {
+      allow read: if true;
+      allow write: if isManagerOrAbove() || isStaffOrSocietyRep();
+    }
+
+    match /lost_found/{fileName} {
+      allow read: if isAuthenticated();
+      allow write: if isAuthenticated() && request.resource.size < 5 * 1024 * 1024; // 5MB limit
+    }
+
+    match /data_transfers/{fileName} {
+      allow read, write: if isManagerOrAbove() || getUserRole() == 'finance_staff';
+    }
+  }
+}
