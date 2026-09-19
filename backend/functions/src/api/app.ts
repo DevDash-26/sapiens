@@ -5,6 +5,7 @@ import { sendError } from '../utils/envelope';
 
 // Phase 1 Route handlers
 import metaRoutes from '../routes/meta';
+import authRoutes from '../routes/auth';
 import meRoutes from '../routes/me';
 
 // Phase 2 Route handlers
@@ -28,6 +29,7 @@ export function createExpressApp(): Express {
   // Mount API v1 router
   const v1 = express.Router();
   v1.use('/', metaRoutes);
+  v1.use('/auth', authRoutes);
   v1.use('/me', meRoutes);
   v1.use('/feed', feedRoutes);
   v1.use('/contents', contentsRoutes);
