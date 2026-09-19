@@ -12,18 +12,19 @@
     "export:web": "expo export -p web"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.1.1",
     "expo": "~57.0.24",
     "expo-status-bar": "~57.0.1",
+    "firebase": "^11.4.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.3",
-    "react-native-web": "~0.21.2",
-    "firebase": "^11.4.0"
+    "react-native-web": "~0.21.2"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
-    "babel-preset-expo": "~57.0.12",
     "@types/react": "~19.2.2",
+    "babel-preset-expo": "~57.0.12",
     "typescript": "^5.7.0"
   }
 }

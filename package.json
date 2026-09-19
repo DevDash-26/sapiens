@@ -2,6 +2,7 @@
   "name": "campus-management-monorepo",
   "version": "1.0.0",
   "private": true,
+  "main": "index.ts",
   "description": "Campus Management System - Expo 57 & Firebase Monorepo with 8-Tier RBAC, Text.lk SMS, and Data Transfer",
   "workspaces": [
     "frontend",

@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   badge: {
     alignSelf: 'flex-start',
-    backgroundColor: '#e0e7ff',
+    backgroundColor: '#fee2e2',
     paddingHorizontal: 8,
     paddingVertical: 2,
     borderRadius: 4,
@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
   },
   badgeText: {
     fontSize: 11,
-    color: '#3730a3',
+    color: '#9e1217',
     fontWeight: '600',
   },
   questionRow: {

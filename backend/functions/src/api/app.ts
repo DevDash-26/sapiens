@@ -12,6 +12,16 @@ import feedRoutes from '../routes/feed';
 import contentsRoutes from '../routes/contents';
 import calendarRoutes from '../routes/calendar';
 
+// Phase 3-6 Route handlers per API-Contract+DataModel.md
+import alertsRoutes from '../routes/alerts';
+import requestsRoutes from '../routes/requests';
+import roomsRoutes from '../routes/rooms';
+import societiesRoutes from '../routes/societies';
+import faqsRoutes from '../routes/faqs';
+import staffRoutes from '../routes/staff';
+import usersRoutes from '../routes/users';
+import aiRoutes from '../routes/ai';
+
 export function createExpressApp(): Express {
   const app = express();
 
@@ -31,6 +41,14 @@ export function createExpressApp(): Express {
   v1.use('/feed', feedRoutes);
   v1.use('/contents', contentsRoutes);
   v1.use('/calendar', calendarRoutes);
+  v1.use('/alerts', alertsRoutes);
+  v1.use('/requests', requestsRoutes);
+  v1.use('/rooms', roomsRoutes);
+  v1.use('/societies', societiesRoutes);
+  v1.use('/faqs', faqsRoutes);
+  v1.use('/staff', staffRoutes);
+  v1.use('/users', usersRoutes);
+  v1.use('/ai', aiRoutes);
 
   app.use('/api/v1', v1);
   app.use('/', v1);
