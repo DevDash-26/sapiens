@@ -35,6 +35,7 @@ export function createExpressApp(): Express {
   v1.use('/notifications', notificationsRoutes);
 
   app.use('/api/v1', v1);
+  app.use('/v1', v1);
   app.use('/', v1);
 
   // 404 handler
