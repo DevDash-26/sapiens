@@ -1,0 +1,1936 @@
+{
+  "info": {
+    "_postman_id": "ucl-campus-hub-api-v1-postman-collection",
+    "name": "UCL Campus Management System - API v1.0",
+    "description": "Authoritative Postman test collection for Universal College Lanka (UCL) Campus Management System.\nCovers Google Identity Toolkit Auth, System/Meta Config, User Profiles, Unified Feed, Academic Calendar, Targeted Content Engine, and Notifications Inbox.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "https://asia-south1-ucl-net-prod.cloudfunctions.net/api",
+      "type": "string"
+    },
+    {
+      "key": "LOCAL_URL",
+      "value": "http://127.0.0.1:5001/ucl-net-prod/asia-south1/api",
+      "type": "string"
+    },
+    {
+      "key": "FIREBASE_API_KEY",
+      "value": "AIzaSyC6GpCVef8eoO9Zbd5wihc_wKMUqeGQwo8",
+      "type": "string"
+    },
+    {
+      "key": "DEMO_UID",
+      "value": "usr_student_01",
+      "type": "string"
+    },
+    {
+      "key": "DEMO_ROLE",
+      "value": "student",
+      "type": "string"
+    },
+    {
+      "key": "ID_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "REFRESH_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CUSTOM_TOKEN",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "CONTENT_ID",
+      "value": "cnt_a1b2c3",
+      "type": "string"
+    },
+    {
+      "key": "EVENT_ID",
+      "value": "cnt_evt1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "1. Google Identity Toolkit & Auth",
+      "item": [
+        {
+          "name": "1. Demo Role Switcher Token (POST /auth/demo-token)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/auth/demo-token",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "auth",
+                "demo-token"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"student\",\n  \"uid\": \"usr_student_01\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Returns customToken and role\", function () {",
+                  "    pm.expect(jsonData.ok).to.be.true;",
+                  "    pm.expect(jsonData.data.customToken).to.be.a('string');",
+                  "    pm.collectionVariables.set(\"CUSTOM_TOKEN\", jsonData.data.customToken);",
+                  "    pm.collectionVariables.set(\"DEMO_UID\", jsonData.data.uid);",
+                  "    pm.collectionVariables.set(\"DEMO_ROLE\", jsonData.data.role);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Sign In With Custom Token (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithCustomToken?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:signInWithCustomToken"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"{{CUSTOM_TOKEN}}\",\n  \"returnSecureToken\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "var jsonData = pm.response.json();",
+                  "pm.test(\"Acquired ID token and Refresh token\", function () {",
+                  "    pm.expect(jsonData.idToken).to.be.a('string');",
+                  "    pm.collectionVariables.set(\"ID_TOKEN\", jsonData.idToken);",
+                  "    pm.collectionVariables.set(\"REFRESH_TOKEN\", jsonData.refreshToken);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Sign In With Password (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:signInWithPassword"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"nimasha@ucl.demo\",\n  \"password\": \"Password123!\",\n  \"returnSecureToken\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Password Sign In or User Not Found check\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"ID_TOKEN\", jsonData.idToken);",
+                  "    pm.collectionVariables.set(\"REFRESH_TOKEN\", jsonData.refreshToken);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Sign Up New User (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:signUp"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"demo.applicant@ucl.demo\",\n  \"password\": \"SecurePassword123!\",\n  \"returnSecureToken\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Sign Up response status\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Refresh ID Token (Secure Token Service)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/x-www-form-urlencoded"
+              }
+            ],
+            "url": {
+              "raw": "https://securetoken.googleapis.com/v1/token?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "securetoken.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "token"
+              ]
+            },
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {
+                  "key": "grant_type",
+                  "value": "refresh_token",
+                  "type": "text"
+                },
+                {
+                  "key": "refresh_token",
+                  "value": "{{REFRESH_TOKEN}}",
+                  "type": "text"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status code is 200 or 400\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});",
+                  "if (pm.response.code === 200) {",
+                  "    var jsonData = pm.response.json();",
+                  "    pm.collectionVariables.set(\"ID_TOKEN\", jsonData.id_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Send Password Reset Email (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:sendOobCode"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"requestType\": \"PASSWORD_RESET\",\n  \"email\": \"nimasha@ucl.demo\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Send OOB code handled\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Lookup User Account Info (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:lookup?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:lookup"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"{{ID_TOKEN}}\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Lookup user account response\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Update Account Profile (Identity Toolkit)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "https://identitytoolkit.googleapis.com/v1/accounts:update?key={{FIREBASE_API_KEY}}",
+              "host": [
+                "identitytoolkit.googleapis.com"
+              ],
+              "path": [
+                "v1",
+                "accounts:update"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"idToken\": \"{{ID_TOKEN}}\",\n  \"displayName\": \"Nimasha Perera (Verified)\",\n  \"returnSecureToken\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Profile update response\", function () {",
+                  "    pm.expect([200, 400]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2. Phase 1: System & User Profiles",
+      "item": [
+        {
+          "name": "1. Health Check (GET /health)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/health",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Status is 200 and healthy\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.status).to.eql(\"healthy\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Meta Config & Taxonomies (GET /meta/config)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{BASE_URL}}/meta/config",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "meta",
+                "config"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns 8 roles and taxonomies\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.role).to.include(\"super_admin\");",
+                  "    pm.expect(res.data.role).to.include(\"student\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Get My Profile (GET /me)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/me",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "me"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns authenticated user profile\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.displayName).to.be.a('string');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Bootstrap Profile After Sign Up (POST /me/bootstrap)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/me/bootstrap",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "me",
+                "bootstrap"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Nimasha Perera\",\n  \"faculty\": \"FOC\",\n  \"programme\": \"BSC-SE\",\n  \"yearGroup\": 2,\n  \"studentId\": \"UCL/24/0142\",\n  \"phone\": \"+94771234567\",\n  \"smsOptIn\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Bootstrap response is 200 or 201\", function () {",
+                  "    pm.expect([200, 201]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Update My Profile (PATCH /me)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/me",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "me"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Nimasha Perera\",\n  \"phone\": \"+94771234567\",\n  \"smsOptIn\": true,\n  \"notifPrefs\": {\n    \"push\": true,\n    \"categories\": {\n      \"announcement\": true,\n      \"event\": true,\n      \"booking\": true,\n      \"request\": true,\n      \"society\": true\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Update user profile succeeds\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.smsOptIn).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Register FCM Push Token (PUT /me/fcm-token)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/me/fcm-token",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "me",
+                "fcm-token"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"demo_fcm_token_device_xyz123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"FCM token registered\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.registered).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Unregister FCM Push Token (DELETE /me/fcm-token)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/me/fcm-token",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "me",
+                "fcm-token"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"token\": \"demo_fcm_token_device_xyz123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"FCM token unregistered\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.unregistered).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "3. Phase 2: Unified Feed & Calendar",
+      "item": [
+        {
+          "name": "1. Unified Home Feed (GET /feed)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/feed",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "feed"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Feed returns unified sections in one round-trip\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data).to.have.property('forYou');",
+                  "    pm.expect(res.data).to.have.property('university');",
+                  "    pm.expect(res.data).to.have.property('upcomingEvents');",
+                  "    pm.expect(res.data).to.have.property('nextCalendar');",
+                  "    pm.expect(res.data).to.have.property('me');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Merged Academic Calendar (GET /calendar)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/calendar",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "calendar"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Calendar items returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Export Standard iCalendar .ics (GET /calendar/ics)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/calendar/ics",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "calendar",
+                "ics"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns text/calendar ics content\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    pm.expect(pm.response.text()).to.include(\"BEGIN:VCALENDAR\");",
+                  "    pm.expect(pm.response.text()).to.include(\"END:VCALENDAR\");",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "4. Phase 2: Targeted Content Engine",
+      "item": [
+        {
+          "name": "1. List Content Cards (GET /contents)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents?limit=20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns content cards array\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data).to.be.an('array');",
+                  "    if (res.data.length > 0) {",
+                  "        pm.collectionVariables.set(\"CONTENT_ID\", res.data[0].id);",
+                  "    }",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Filter Content by Type (GET /contents?type=announcement)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents?type=announcement&limit=10",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Filtered announcements returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Search Content (GET /contents?q=database)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents?q=database",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Search query returns results\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Get My Authored Content (GET /contents?mine=true)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents?mine=true",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Returns user authored content\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "5. Moderation Queue (GET /contents/moderation/queue)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_mgr_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/moderation/queue",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "moderation",
+                "queue"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Moderation queue returned for manager\", function () {",
+                  "    pm.expect([200, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "6. Get Content Detail by ID (GET /contents/:id)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Content detail returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.id).to.eql(pm.collectionVariables.get(\"CONTENT_ID\"));",
+                  "    pm.expect(res.data).to.have.property('viewer');",
+                  "    pm.expect(res.data).to.have.property('shareUrl');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "7. Create Content Item (POST /contents)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_acad_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"type\": \"announcement\",\n  \"category\": \"academic\",\n  \"title\": \"SE3020 Architecture Submission Deadline Extended\",\n  \"summary\": \"The assignment submission link remains open until Sunday midnight.\",\n  \"body\": \"Dear students,\\n\\nFollowing faculty review, the deadline is extended to 23:59 Sunday.\",\n  \"priority\": \"normal\",\n  \"audience\": {\n    \"all\": false,\n    \"faculties\": [\n      \"FOC\"\n    ],\n    \"programmes\": [\n      \"BSC-SE\"\n    ],\n    \"years\": [\n      2\n    ]\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Content creation succeeds\", function () {",
+                  "    pm.response.to.have.status(201);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.collectionVariables.set(\"CONTENT_ID\", res.data.id);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "8. Update Content (PATCH /contents/:id)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_acad_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"SE3020 Architecture Submission Deadline Extended [CONFIRMED]\",\n  \"priority\": \"high\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Content update response\", function () {",
+                  "    pm.expect([200, 400, 403]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "9. Submit Content For Review (POST /contents/:id/submit-for-review)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_rep_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}/submit-for-review",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}",
+                "submit-for-review"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Review submission response\", function () {",
+                  "    pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "10. Approve Content (POST /contents/:id/approve)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_mgr_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}/approve",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}",
+                "approve"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Approval response\", function () {",
+                  "    pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "11. Reject Content (POST /contents/:id/reject)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_mgr_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}/reject",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}",
+                "reject"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Please fix poster resolution before publishing.\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Rejection response\", function () {",
+                  "    pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "12. Pin/Unpin Content (POST /contents/:id/pin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_admin_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}/pin",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}",
+                "pin"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pinned\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Pin content response\", function () {",
+                  "    pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "13. RSVP / Express Interest (POST /contents/:id/interested)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{EVENT_ID}}/interested",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{EVENT_ID}}",
+                "interested"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Interest expressed\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.interested).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "14. Remove RSVP (DELETE /contents/:id/interested)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{EVENT_ID}}/interested",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{EVENT_ID}}",
+                "interested"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Interest removed\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data.interested).to.be.false;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "15. Archive Content (POST /contents/:id/archive)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "usr_admin_01"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/contents/{{CONTENT_ID}}/archive",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "contents",
+                "{{CONTENT_ID}}",
+                "archive"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Archive response\", function () {",
+                  "    pm.expect([200, 400, 403, 404]).to.include(pm.response.code);",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "5. Phase 2: Inbox & Notifications",
+      "item": [
+        {
+          "name": "1. Get Notifications Inbox (GET /notifications)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notifications?limit=20",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Inbox list returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.data).to.be.an('array');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "2. Filter Unread Notifications (GET /notifications?unread=true)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notifications?unread=true",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications"
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Unread notifications list returned\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "    pm.expect(res.meta).to.have.property('unreadCount');",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "3. Mark Specific Notifications Read (POST /notifications/read)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notifications/read",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                "read"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"ids\": [\n    \"ntf_01\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"Notifications marked read\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        },
+        {
+          "name": "4. Mark All Notifications Read (POST /notifications/read)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{ID_TOKEN}}",
+                "type": "text"
+              },
+              {
+                "key": "x-demo-uid",
+                "value": "{{DEMO_UID}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/notifications/read",
+              "host": [
+                "{{BASE_URL}}"
+              ],
+              "path": [
+                "notifications",
+                "read"
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"all\": true\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "pm.test(\"All notifications marked read\", function () {",
+                  "    pm.response.to.have.status(200);",
+                  "    var res = pm.response.json();",
+                  "    pm.expect(res.ok).to.be.true;",
+                  "});"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

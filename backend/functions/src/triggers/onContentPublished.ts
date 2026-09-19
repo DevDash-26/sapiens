@@ -3,7 +3,9 @@ import * as admin from 'firebase-admin';
 import { Content, User } from '../types/contract';
 import { isContentVisibleToUser } from '../utils/targeting';
 
-export const onContentPublished = functions.firestore
+export const onContentPublished = functions
+  .region('asia-south1')
+  .firestore
   .document('contents/{contentId}')
   .onWrite(async (change, context) => {
     const after = change.after.exists ? (change.after.data() as Content) : null;

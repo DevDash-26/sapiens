@@ -2,7 +2,9 @@ import * as functions from 'firebase-functions/v1';
 import * as admin from 'firebase-admin';
 
 // publishScheduled - runs every 1 minute to transition scheduled content (§6.2, §7.3)
-export const publishScheduled = functions.pubsub
+export const publishScheduled = functions
+  .region('asia-south1')
+  .pubsub
   .schedule('every 1 minutes')
   .onRun(async () => {
     const db = admin.firestore();
@@ -31,7 +33,9 @@ export const publishScheduled = functions.pubsub
   });
 
 // expireContent - runs every 5 minutes to expire past content (§6.2, §7.3)
-export const expireContent = functions.pubsub
+export const expireContent = functions
+  .region('asia-south1')
+  .pubsub
   .schedule('every 5 minutes')
   .onRun(async () => {
     const db = admin.firestore();
@@ -60,7 +64,9 @@ export const expireContent = functions.pubsub
   });
 
 // cleanupSlots - runs daily to remove outdated roomSlots locks (§7.3)
-export const cleanupSlots = functions.pubsub
+export const cleanupSlots = functions
+  .region('asia-south1')
+  .pubsub
   .schedule('every 24 hours')
   .onRun(async () => {
     const db = admin.firestore();

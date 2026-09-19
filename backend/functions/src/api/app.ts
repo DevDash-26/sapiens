@@ -11,6 +11,7 @@ import meRoutes from '../routes/me';
 import feedRoutes from '../routes/feed';
 import contentsRoutes from '../routes/contents';
 import calendarRoutes from '../routes/calendar';
+import notificationsRoutes from '../routes/notifications';
 
 export function createExpressApp(): Express {
   const app = express();
@@ -31,6 +32,7 @@ export function createExpressApp(): Express {
   v1.use('/feed', feedRoutes);
   v1.use('/contents', contentsRoutes);
   v1.use('/calendar', calendarRoutes);
+  v1.use('/notifications', notificationsRoutes);
 
   app.use('/api/v1', v1);
   app.use('/', v1);
